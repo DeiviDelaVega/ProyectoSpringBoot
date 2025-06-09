@@ -1,9 +1,19 @@
 package com.polo.webreservas.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 
 @Entity
 @Table(name = "Administrador")
@@ -44,9 +54,11 @@ public class Administrador {
 	}
 
 	public void setId(Integer id) {
-		this.id = id;
-	}
 
+	public Administrador() {
+
+	}
+	
 	public String getNombre() {
 		return nombre;
 	}
@@ -87,3 +99,4 @@ public class Administrador {
 		this.correo = correo;
 	}
 }
+
