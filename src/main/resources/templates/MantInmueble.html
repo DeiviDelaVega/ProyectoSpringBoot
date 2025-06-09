@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mantenimiento de Inmuebles</title>
+<!-- CSS only -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+	<nav th:replace="HeaderNavAdministrador :: nav"></nav>
+	<div class="container">
+		<div class="row">
+			<h1>Lista de Inmuebles</h1>
+		</div>
+		<div class="row">
+		   <div class="col-lg-3">
+		     <a th:href="@{/inmuebles/nuevo}" class="btn btn-primary btn-sm mb3">Agregar Inmueble</a>
+		   </div>
+		</div>
+		<form th:action="@{/inmuebles}" method="get" class="form-inline mb-3">
+		    <input type="text" name="filtro" placeholder="Buscar descripción o servicio"
+		           th:value="${filtro}" class="form-control mr-2"/>
+		
+		    <select name="disponibilidad" class="form-control mr-2">
+		        <option value="Si" th:selected="${disponibilidad == 'Si'}">Si</option>
+		        <option value="No" th:selected="${disponibilidad == 'No'}">No</option>
+		    </select>
+		
+		    <button type="submit" class="btn btn-primary">Buscar</button>
+		    <a href="/inmuebles" class="btn btn-secondary">Limpiar</a>
+		</form>
+		<br>
+		<table class="table table-striped table-bordered">
+			<thead class="table-dark">
+				<tr>
+					<th class="text-center align-middle">ID Inmueble</th>
+					<th class="text-center align-middle">Nombre</th>
+					<th class="text-center align-middle">Capacidad</th>
+					<th class="text-center align-middle">Servicios Incluidos</th>
+					<th class="text-center align-middle">Disponibilidad</th>
+					<th class="text-center align-middle">Precio Por Noche</th>
+					<th class="text-center align-middle">Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="inmueble : ${inmuebles}">
+					<td th:text="${inmueble.id}">ID Inmueble</td>
+					<td th:text="${inmueble.nombre}">Nombre</td>	<!-- .nombre es el atributo es Java -->
+					<td th:text="${inmueble.capacidad}">Capacidad</td>
+					<td th:text="${inmueble.serviciosIncluidos}">Servicios Incluidos</td>
+					<td th:text="${inmueble.disponibilidad}">Disponibilidad</td>
+					<td th:text="${inmueble.precioPorNoche}">Precio Por Noche</td>
+					<td>
+					  <a th:href="@{/inmuebles/detalle/{id}(id=${inmueble.id})}" class="btn btn-warning">Detalle</a>
+					  <a th:href="@{/inmuebles/editar/{id}(id=${inmueble.id})}" class="btn btn-info">Editar</a>
+					  <a th:href="@{/inmuebles/{id}(id=${inmueble.id})}" class="btn btn-danger">Eliminar</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<nav th:replace="Paginacion :: paginator"></nav> <!-- <nav th:fragment="paginator"> de Paginacion.html -->
+	</div>
+</body>
+</html>

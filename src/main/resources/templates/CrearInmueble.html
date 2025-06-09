@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Crear Inmuebles</title>
+<!-- CSS only -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+	<nav th:replace="HeaderNavAdministrador :: nav"></nav>
+	<br>
+	<div class="container">
+	   <div class="row">
+	      <div class="col-lg-8 col-md-10 col-sm-12 container justify-content-center card">
+	         <h1 class="text-center">Registro de Inmuebles</h1>
+	         <div class="card-body">
+	            <form th:action="@{/inmuebles}" th:object="${inmueble}" method="POST">
+	               
+	               <div class="form-group">
+	                  <label>Nombre :</label>
+	                  <input type="text" th:field="*{nombre}" class="form-control" placeholder="Nombre del inmueble" required>
+	               </div>
+	
+	               <div class="form-group">
+	                  <label>Capacidad :</label>
+	                  <input type="number" th:field="*{capacidad}" class="form-control" placeholder="Capacidad del inmueble" required>
+	               </div>
+	
+	               <div class="form-group">
+	                  <label>Número de Habitaciones :</label>
+	                  <input type="number" th:field="*{numeroHabitaciones}" class="form-control" placeholder="Número de habitaciones" required>
+	               </div>
+	
+	               <div class="form-group">
+	                  <label>Descripción :</label>
+	                  <textarea th:field="*{descripcion}" class="form-control" rows="3" placeholder="Descripción del inmueble"></textarea>
+	               </div>
+	
+	               <div class="form-group">
+	                  <label>Servicios Incluidos :</label>
+	                  <input type="text" th:field="*{serviciosIncluidos}" class="form-control" placeholder="Servicios incluidos">
+	               </div>
+	
+	               <div class="form-group">
+					   <label>Disponibilidad :</label>
+					   <select th:field="*{disponibilidad}" class="form-control" required>
+					      <option value="Si" th:selected="${inmueble.disponibilidad == 'Si'}">Si</option>
+					      <option value="No" th:selected="${inmueble.disponibilidad == 'No'}">No</option>
+					   </select>
+					</div>
+	
+	               <div class="form-group">
+	                  <label>Precio por Noche :</label>
+	                  <input type="number" step="0.01" th:field="*{precioPorNoche}" class="form-control" placeholder="Precio por noche" required>
+	               </div>
+	
+	               <div class="form-group">
+	                  <label>Imagen Habitación :</label>
+	                  <input type="text" th:field="*{imagenHabitacion}" class="form-control" placeholder="URL de la imagen o nombre del archivo">
+	               </div>
+	
+	               <div class="form-group">
+					    <label>Administrador:</label>
+					    <select th:field="*{administrador.id}" class="form-control" required>
+					        <option th:if="${inmueble.administrador == null or inmueble.administrador.id == 0}" 
+							        value="" disabled selected>Seleccione un administrador</option>
+							<option th:each="admin : ${administradores}" 
+							        th:value="${admin.id}" 
+							        th:text="${admin.nombre}" 
+							        th:selected="${inmueble.administrador != null and admin.id == inmueble.administrador.id}">
+							</option>
+					    </select>
+					</div>
+	
+	               <div class="box-footer">
+	                  <button class="btn btn-success">Guardar</button>
+	               </div>
+	               
+	               <a class="btn btn-primary mt-3" th:href="@{/inmuebles}">Volver</a>
+	
+	            </form>
+	         </div>
+	      </div>
+	   </div>
+	</div>
+</body>
+</html>
