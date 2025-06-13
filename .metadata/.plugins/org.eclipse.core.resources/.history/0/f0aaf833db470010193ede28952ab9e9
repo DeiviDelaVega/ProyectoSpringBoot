@@ -1,0 +1,64 @@
+package com.polo.webreservas.controller;
+
+
+import com.polo.webreservas.model.Reserva;
+import com.polo.webreservas.service.InmuebleService;
+import com.polo.webreservas.service.ReservaService;
+import jakarta.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@Controller
+@RequestMapping("/reservas")
+public class ReservaController {
+
+    @Autowired
+    private ReservaService reservaService;
+
+    @Autowired
+    private InmuebleService inmuebleService;
+
+    // Mostrar lista de reservas
+    @GetMapping
+    public String listarReservas(Model model) {
+        List<Reserva> reservas = reservaService.listarTodas();
+        model.addAttribute("reservas", reservas);
+        return "reserva/lista"; // Asegúrate de tener esta vista
+    }
+
+
+    // Guardar nueva reserva
+    @PostMapping("/guardar")
+    public String guardarReserva(@Valid @ModelAttribute("reserva") Reserva reserva,
+                                 BindingResult result,
+                                 Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("inmuebles", inmuebleService.listarTodos());
+            return "reserva/formulario";
+        }
+        reservaService.guardar(reserva);
+        return "redirect:/reservas";
+    }
+
+    // Mostrar formulario de edición
+    @GetMapping("/editar/{id}")
+    public String mostrarFormularioEditar(@PathVariable Integer id, Model model) {
+        Reserva reserva = reservaService.buscarPorId(id);
+        if (reserva == null) {
+            return "redirect:/reservas";
+        }
+        model.addAttribute("reserva", reserva);
+        model.addAttribute("inmuebles", inmuebleService.listarTodos());
+        return "reserva/formulario";
+    }
+
+
+
+
+}

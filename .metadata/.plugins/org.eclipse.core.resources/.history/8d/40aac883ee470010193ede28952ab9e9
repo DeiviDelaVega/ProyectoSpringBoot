@@ -1,0 +1,19 @@
+package com.polo.webreservas.repository;
+
+import com.polo.webreservas.model.Reserva;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
+	List<Reserva> findByCliente_NombreContainingIgnoreCase(String nombre);
+	List<Reserva> findByClienteId(Integer idCliente);
+	List<Reserva> findByFechaInicio(LocalDate fechaInicio);
+	List<Reserva> findByCliente_IdClienteAndFechaInicio(Integer idCliente, LocalDate fechaInicio);
+
+
+}

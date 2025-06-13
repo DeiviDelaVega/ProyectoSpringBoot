@@ -1,0 +1,13 @@
+package com.polo.webreservas.service;
+
+import java.time.LocalDate;
+import java.util.List;
+import com.polo.webreservas.model.Reserva;
+
+public interface ReservaService {
+    List<Reserva> listarTodas();
+    Reserva buscarPorId(Integer id);
+    List<Reserva> buscarPorCliente(Integer idCliente);
+    List<Reserva> buscarPorFechaInicio(LocalDate fechaInicio);
+    List<Reserva> buscarPorClienteYFecha(Integer idCliente, LocalDate fechaInicio);
+}

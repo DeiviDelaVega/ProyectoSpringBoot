@@ -1,0 +1,37 @@
+package com.polo.webreservas.service;
+
+import com.polo.webreservas.model.Reserva;
+import com.polo.webreservas.repository.ReservaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.awt.print.Pageable;
+import java.time.LocalDate;
+import java.util.List;
+
+@Service
+public class ReservaServiceImpl implements ReservaService {
+
+    @Autowired
+    private ReservaRepository reservaRepository;
+
+    @Override
+    public Page<Reserva> listarTodas(Pageable pageable) {
+        return reservaRepository.findAll(pageable);
+    }
+
+    @Override
+    public Reserva buscarPorId(Integer id) {
+        return reservaRepository.findById(id).orElse(null);
+    }
+
+ 
+    @Override
+    public List<Reserva> buscarPorRangoFechas(LocalDate fechaInicio, LocalDate fechaFin, Pageable pageable) {
+        return reservaRepository.findByFechaInicioGreaterThanEqualAndFechaFinLessThanEqual(fechaInicio, fechaFin, pageable);
+    }
+
+
+
+ 
+}
