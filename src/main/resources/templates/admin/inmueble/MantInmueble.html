@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mantenimiento de Inmuebles</title>
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous">
+
+<!-- Incluir íconos vectoriales CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<!-- CSS personalizado -->
+<link rel="stylesheet" th:href="@{/css/MantInmueble.css}">
+
+</head>
+<body>
+<nav th:replace="admin/HeaderNavAdministrador :: nav"></nav>
+<br>
+<div class="list-clientes-container">
+    <h2 class="section-title"><strong>MANTENIMIENTO DE INMUEBLES</strong></h2>
+	<br>
+    <div class="d-flex mb-3" style="gap: 16px;">
+	    <a th:href="@{/admin/inmueble/inmuebles/nuevo}" class="btn btn-dark px-4 py-2 fs-6">
+	        Agregar Inmueble
+	    </a>
+	
+	    <button id="toggleFiltrosBtn" class="btn btn-outline-secondary px-4 py-2 fs-6" onclick="toggleFiltros()">
+	        <i class="fa fa-sliders-h me-2"></i> Filtros
+	    </button>
+	</div>
+
+	<div id="filtrosForm" style="display: none;">
+	    <form th:action="@{/admin/inmueble/inmuebles}" method="get" class="filtro-container">
+		    <div class="form-row">
+		        <div class="col-md-6 d-flex align-items-center mb-2" style="margin-left: 23px">
+		            <label class="control-label mr-2" style="width: 150px;">Descripción o Servicio</label>
+		            <input type="text" name="filtro" placeholder="Buscar descripción o servicio"
+		                   th:value="${filtro}" class="form-control" />
+		        </div>
+		        <div class="col-md-6 d-flex align-items-center mb-2">
+		            <label class="control-label mr-2" style="width: 120px;">Disponibilidad</label>
+		            <select name="disponibilidad" class="form-control">
+		                <option value="Si" th:selected="${disponibilidad == 'Si'}">Si</option>
+		                <option value="No" th:selected="${disponibilidad == 'No'}">No</option>
+		            </select>
+		        </div>
+		    </div>
+	        
+	        <div class="d-flex mt-3" style="margin-left: 23px">
+			    <button type="submit" class="btn btn-dark">Buscar</button>
+			    <a href="/admin/inmueble/inmuebles" class="btn btn-secondary ms-2" style="margin-left: 8px">Limpiar</a>
+			</div>
+
+	    </form>
+	</div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="text-center align-middle">ID Inmueble</th>
+                <th class="text-center align-middle">Nombre</th>
+                <th class="text-center align-middle">Capacidad</th>
+                <th class="text-center align-middle">Servicios Incluidos</th>
+                <th class="text-center align-middle">Disponibilidad</th>
+                <th class="text-center align-middle">Precio Por Noche</th>
+                <th class="text-center align-middle">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="inmueble : ${inmuebles}">
+                <td th:text="${inmueble.id}">ID Inmueble</td>
+                <td th:text="${inmueble.nombre}">Nombre</td>
+                <td th:text="${inmueble.capacidad}">Capacidad</td>
+                <td th:text="${inmueble.serviciosIncluidos}">Servicios Incluidos</td>
+                <td th:text="${inmueble.disponibilidad}">Disponibilidad</td>
+                <td th:text="${inmueble.precioPorNoche}">Precio Por Noche</td>
+                <td>
+                    <a th:href="@{/admin/inmueble/inmuebles/detalle/{id}(id=${inmueble.id})}" title="Detalles">
+                        <i class="fa fa-magnifying-glass icon-action"></i>
+                    </a>
+                    <a th:href="@{/admin/inmueble/inmuebles/editar/{id}(id=${inmueble.id})}" title="Editar">
+                        <i class="fa fa-pen icon-action"></i>
+                    </a>
+                    <a th:href="@{/admin/inmueble/inmuebles/{id}(id=${inmueble.id})}" title="Eliminar">
+                        <i class="fa fa-trash icon-action"></i>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <script>
+	    function toggleFiltros() {
+	        const filtros = document.getElementById('filtrosForm');
+	        const boton = document.getElementById('toggleFiltrosBtn');
+	
+	        if (filtros.style.display === 'none') {
+	            filtros.style.display = 'block';
+	            boton.textContent = 'Ocultar Filtros';
+	        } else {
+	            filtros.style.display = 'none';
+	            boton.innerHTML = '<i class="fa fa-sliders-h me-1"></i> Filtros';
+	        }
+	    }
+	</script>
+
+    <nav th:replace="Paginacion :: paginator"></nav>
+</div>
+<br>
+</body>
+</html>

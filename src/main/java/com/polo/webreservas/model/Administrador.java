@@ -17,12 +17,11 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "Administrador")
-
 public class Administrador {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Administrador")
-    private int id;
+    private Integer id;
 
     @NotNull
     @Size(max = 100)
@@ -49,15 +48,12 @@ public class Administrador {
     @Size(max = 50)
     @Column(name = "Correo", nullable = false, length = 50, unique = true)
     private String correo;
-    
-    
-    
 
 	public Administrador() {
 
 	}
-
-	public Administrador(int id, @NotNull @Size(max = 100) String nombre, @NotNull @Size(max = 100) String apellido,
+	
+	public Administrador(Integer id, @NotNull @Size(max = 100) String nombre, @NotNull @Size(max = 100) String apellido,
 			@NotNull @Size(max = 50) String nroDocumento, @NotNull @Size(max = 50) String telefono,
 			@NotNull @Email @Size(max = 50) String correo) {
 		super();
@@ -68,7 +64,7 @@ public class Administrador {
 		this.telefono = telefono;
 		this.correo = correo;
 	}
-	
+
 	public Administrador(@NotNull @Size(max = 100) String nombre, @NotNull @Size(max = 100) String apellido,
 			@NotNull @Size(max = 50) String nroDocumento, @NotNull @Size(max = 50) String telefono,
 			@NotNull @Email @Size(max = 50) String correo) {
@@ -80,11 +76,11 @@ public class Administrador {
 		this.correo = correo;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -127,7 +123,5 @@ public class Administrador {
 	public void setCorreo(String correo) {
 		this.correo = correo;
 	}
-    
-    
-
 }
+
