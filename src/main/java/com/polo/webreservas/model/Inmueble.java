@@ -44,15 +44,35 @@ public class Inmueble {
     @Column(name = "Precio_Por_Noche", precision = 10, scale = 2)
     private BigDecimal precioPorNoche;
 
-    @Size(max = 100)
-    @Column(name = "Imagen_Habitacion", length = 100)
+    @Size(max = 300)
+    @Column(name = "Imagen_Habitacion", length = 300)
     private String imagenHabitacion;
 
     @NotNull(message = "Debe seleccionar un administrador")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_Administrador")
     private Administrador administrador;
-
+    
+	public Inmueble(@NotNull @Size(max = 100) String nombre, @NotNull @Positive int capacidad,
+			@NotNull @Positive int numeroHabitaciones, @Size(max = 300) String descripcion,
+			@Size(max = 200) String serviciosIncluidos, String disponibilidad, @Positive BigDecimal precioPorNoche,
+			@Size(max = 300) String imagenHabitacion,
+			@NotNull(message = "Debe seleccionar un administrador") Administrador administrador) {
+		this.nombre = nombre;
+		this.capacidad = capacidad;
+		this.numeroHabitaciones = numeroHabitaciones;
+		this.descripcion = descripcion;
+		this.serviciosIncluidos = serviciosIncluidos;
+		this.disponibilidad = disponibilidad;
+		this.precioPorNoche = precioPorNoche;
+		this.imagenHabitacion = imagenHabitacion;
+		this.administrador = administrador;
+	}
+	
+	public Inmueble() {
+		
+	}
+	
 	public int getId() {
 		return id;
 	}

@@ -21,10 +21,10 @@ public class InmuebleServiceImpl implements InmuebleService {
 	}
 	
 	@Override
-	public Inmueble guardar(Inmueble inmueble) {
-		return repositorio.save(inmueble);
+	public Inmueble guardar(Inmueble inmueble){
+	    return repositorio.save(inmueble);
 	}
-	
+
 	@Override
 	public Inmueble obtenerPorId(int id) {
 		return repositorio.findById(id).get();
