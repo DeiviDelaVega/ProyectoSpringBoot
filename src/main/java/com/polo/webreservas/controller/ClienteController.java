@@ -24,8 +24,6 @@ public class ClienteController {
         this.servicio = servicio;
     }
 
-    
-    
     @GetMapping({"", "/"})
     public String listarClientes(
             @RequestParam(defaultValue = "0") int page,
