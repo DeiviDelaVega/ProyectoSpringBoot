@@ -9,7 +9,7 @@
    <nav th:fragment="paginator" class="mt-4">
       <!-- Botón "Primera" -->
       <a th:if="${not page.first}"
-         th:href="@{${page.url}(page=0)}, filtro=${filtro})"
+         th:href="@{${page.url}(page=0, filtro=${filtro})}"
          class="btn btn-outline-secondary m-1">
          Primera
       </a>
