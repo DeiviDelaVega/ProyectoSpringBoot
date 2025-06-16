@@ -1,9 +1,12 @@
 package com.polo.webreservas.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.polo.webreservas.model.Inmueble;
@@ -67,4 +70,41 @@ public class InmuebleServiceImpl implements InmuebleService {
 	        return repositorio.findByDisponibilidad(disponibilidad, pageable);
 	    }
 	}
+	
+	@Override
+	public Page<Inmueble> listarConFiltrosAvanzados(String filtro, Double precioDesde, Double precioHasta,
+	                                                LocalDate fechaDesde, LocalDate fechaHasta,
+	                                                String estado, Pageable pageable) {
+
+	    Specification<Inmueble> spec = Specification.where(null);
+
+	    if (filtro != null && !filtro.isBlank()) {
+	        spec = spec.and((root, query, cb) ->
+	            cb.or(
+	                cb.like(cb.lower(root.get("nombre")), "%" + filtro.toLowerCase() + "%"),
+	                cb.like(cb.lower(root.get("descripcion")), "%" + filtro.toLowerCase() + "%"),
+	                cb.like(cb.lower(root.get("serviciosIncluidos")), "%" + filtro.toLowerCase() + "%")
+	            )
+	        );
+	    }
+
+	    if (precioDesde != null) {
+	        spec = spec.and((root, query, cb) ->
+	            cb.greaterThanOrEqualTo(root.get("precioPorNoche"), BigDecimal.valueOf(precioDesde)));
+	    }
+
+	    if (precioHasta != null) {
+	        spec = spec.and((root, query, cb) ->
+	            cb.lessThanOrEqualTo(root.get("precioPorNoche"), BigDecimal.valueOf(precioHasta)));
+	    }
+
+	    if (estado != null && !estado.isBlank()) {
+	        spec = spec.and((root, query, cb) ->
+	            cb.equal(cb.lower(root.get("disponibilidad")), estado.toLowerCase()));
+	    }
+
+	    return repositorio.findAll(spec, pageable);
+	}
+
+	
 }
