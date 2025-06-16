@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mantenimiento de Reservas</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .content-container {
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .icon-action {
+            margin: 0 8px;
+            color: #333;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        .icon-action:hover {
+            color: #000;
+            transform: scale(1.1);
+        }
+
+        thead {
+            background-color: #343a40;
+            color: white;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+<nav th:replace="admin/HeaderNavAdministrador :: nav"></nav>
+<br>
+<div class="container mt-4 fade-in content-container">
+    <h2 class="section-title">MANTENIMIENTO DE RESERVAS</h2>
+    <br>
+    <div class="d-flex mb-3" style="gap: 16px;">
+        <button id="toggleFiltrosBtn" class="btn btn-outline-secondary px-4 py-2 fs-6">
+            <i class="fa fa-sliders-h me-2"></i> Filtros
+        </button>
+    </div>
+
+    <div id="filtrosForm" style="display: none;">
+        <form th:action="@{/admin/reserva/reservas/filtrar-fechas}" method="get" class="form-inline mb-2">
+            <label class="mr-2">Desde:</label>
+            <input type="date" name="fechaInicio" th:value="${fechaInicio}" class="form-control mr-2">
+            <label class="mr-2">Hasta:</label>
+            <input type="date" name="fechaFin" th:value="${fechaFin}" class="form-control mr-2">
+            <button type="submit" class="btn btn-dark">Buscar</button>
+            <a th:href="@{/admin/reserva/reservas}" class="btn btn-secondary ml-2">Limpiar</a>
+        </form>
+
+        <form th:action="@{/admin/reserva/reservas/filtrar-estado}" method="get" class="form-inline">
+            <label class="mr-2">Estado:</label>
+            <select name="estado" class="form-control mr-2">
+                <option value="Solicitado" th:selected="${estado == 'Solicitado'}">Solicitado</option>
+                <option value="Aprobado" th:selected="${estado == 'Aprobado'}">Aprobado</option>
+                <option value="Cancelado" th:selected="${estado == 'Cancelado'}">Cancelado</option>
+                <option value="Finalizado" th:selected="${estado == 'Finalizado'}">Finalizado</option>
+            </select>
+            <button type="submit" class="btn btn-dark">Filtrar</button>
+        </form>
+    </div>
+
+    <table class="table table-bordered table-hover mt-3">
+        <thead>
+            <tr>
+                <th class="text-center">ID</th>
+                <th class="text-center">Cliente</th>
+                <th class="text-center">Inmueble</th>
+				<th class="text-center">Método de Pago</th>
+				<th class="text-center">Monto Total</th>
+                <th class="text-center">Fecha Inicio</th>
+                <th class="text-center">Fecha Fin</th>
+                <th class="text-center">Estado</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="reserva : ${listReservas}">
+                <td th:text="${reserva.id}" class="text-center"></td>
+                <td th:text="${reserva.cliente.nombre}" class="text-center"></td>
+                <td th:text="${reserva.inmueble.nombre}" class="text-center"></td>
+				<td th:text="${reserva.metodoPago}" class="text-center"></td>
+				<td th:text="${#numbers.formatDecimal(reserva.montoTotal, 1, 'COMMA', 2, 'POINT')}" class="text-center"></td>
+                <td th:text="${reserva.fechaInicio}" class="text-center"></td>
+                <td th:text="${reserva.fechaFin}" class="text-center"></td>
+                <td th:text="${reserva.estadoReserva}" class="text-center"></td>
+                <td class="text-center">
+                    <a th:href="@{/admin/reserva/reservas/detalle/{id}(id=${reserva.id})}" title="Detalles">
+                        <i class="fa fa-magnifying-glass icon-action"></i>
+                    </a>
+                    <a href="javascript:void(0);"
+                       th:onclick="'confirmarEliminacion(\'/admin/reserva/reservas/eliminar/' + ${reserva.id} + '\')'"
+                       title="Eliminar">
+                        <i class="fa fa-trash icon-action text-danger"></i>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <nav th:replace="Paginacion :: paginator"></nav>
+</div>
+
+<!-- Script: Filtros con memoria local -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const filtros = document.getElementById("filtrosForm");
+        const boton = document.getElementById("toggleFiltrosBtn");
+
+        const visible = localStorage.getItem("filtrosVisibles") === "true";
+        filtros.style.display = visible ? "block" : "none";
+
+        boton.innerHTML = visible
+            ? 'Ocultar Filtros'
+            : '<i class="fa fa-sliders-h me-2"></i> Filtros';
+
+        boton.addEventListener("click", function () {
+            const currentlyVisible = filtros.style.display === "block";
+            filtros.style.display = currentlyVisible ? "none" : "block";
+            localStorage.setItem("filtrosVisibles", !currentlyVisible);
+            boton.innerHTML = !currentlyVisible
+                ? 'Ocultar Filtros'
+                : '<i class="fa fa-sliders-h me-2"></i> Filtros';
+        });
+    });
+</script>
+
+<!-- Script: Confirmación SweetAlert2 para eliminar -->
+<script>
+    function confirmarEliminacion(url) {
+        Swal.fire({
+            title: '¿Estás seguro de eliminar esta reserva?',
+            text: "Esta acción no se puede deshacer",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirigimos con un parámetro para mostrar el mensaje después
+                window.location.href = url + '?eliminado=true';
+            }
+        });
+    }
+</script>
+
+<!-- Mostrar mensaje de eliminación exitosa si el parámetro eliminado=true -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('eliminado') === 'true') {
+            Swal.fire({
+                title: '¡Reserva eliminada!',
+                text: 'La reserva se ha eliminado correctamente',
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+            }).then(() => {
+                const url = new URL(window.location.href);
+                url.searchParams.delete('eliminado');
+                window.history.replaceState({}, document.title, url.toString());
+            });
+        }
+    });
+</script>
+
+
+</div>
+
+</body>
+</html>
