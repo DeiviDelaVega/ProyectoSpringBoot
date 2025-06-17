@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Reserva</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            background-color: #f9f9f9;
+        }
+
+        .list-clientes-container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .card {
+            border: none;
+            background-color: transparent;
+        }
+
+        .card-body p {
+            font-size: 1rem;
+            padding: 8px 0;
+        }
+
+        label {
+            font-weight: 500;
+        }
+
+        .btn-dark {
+            margin-right: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+<nav th:replace="admin/HeaderNavAdministrador :: nav"></nav>
+
+<div class="list-clientes-container">
+    <h2 class="section-title">DETALLE DE RESERVA</h2>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <p><strong>ID:</strong> <span th:text="${reserva.id}"></span></p>
+            <p><strong>Cliente:</strong> <span th:text="${reserva.cliente.nombre}"></span></p>
+            <p><strong>Inmueble:</strong> <span th:text="${reserva.inmueble.nombre}"></span></p>
+            <p><strong>Fecha Inicio:</strong> <span th:text="${#temporals.format(reserva.fechaInicio, 'dd/MM/yyyy')}"></span></p>
+            <p><strong>Fecha Fin:</strong> <span th:text="${#temporals.format(reserva.fechaFin, 'dd/MM/yyyy')}"></span></p>
+            <p><strong>Estado Actual:</strong> <span th:text="${reserva.estadoReserva}"></span></p>
+
+            <form id="formEstado" th:action="@{/admin/reserva/reservas/editar-estado/{id}(id=${reserva.id})}" method="post">
+                <div class="form-group">
+                    <label for="estado">Cambiar Estado:</label>
+                    <select name="estado" id="estado" class="form-control">
+                        <option value="Solicitado" th:selected="${reserva.estadoReserva == 'Solicitado'}">Solicitado</option>
+                        <option value="Aprobado" th:selected="${reserva.estadoReserva == 'Aprobado'}">Aprobado</option>
+                        <option value="Cancelado" th:selected="${reserva.estadoReserva == 'Cancelado'}">Cancelado</option>
+                        <option value="Finalizado" th:selected="${reserva.estadoReserva == 'Finalizado'}">Finalizado</option>
+                    </select>
+                </div>
+
+                <button type="button" class="btn btn-dark" onclick="confirmarCambio()">Actualizar Estado</button>
+                <a th:href="@{/admin/reserva/reservas}" class="btn btn-secondary">Volver</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmación de actualización de estado -->
+<script>
+    function confirmarCambio() {
+        Swal.fire({
+            title: '¿Actualizar estado de la reserva?',
+            text: '¿Estás seguro de realizar este cambio?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, actualizar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById("formEstado").submit();
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
