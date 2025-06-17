@@ -1,0 +1,110 @@
+package com.polo.webreservas.service;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.polo.webreservas.model.Inmueble;
+import com.polo.webreservas.repository.InmuebleRepository;
+
+@Service
+public class InmuebleServiceImpl implements InmuebleService {
+
+	@Autowired
+	private InmuebleRepository repositorio;
+	
+	@Override
+	public List<Inmueble> listarTodo() {
+		return repositorio.findAll();
+	}
+	
+	@Override
+	public Inmueble guardar(Inmueble inmueble){
+	    return repositorio.save(inmueble);
+	}
+
+	@Override
+	public Inmueble obtenerPorId(int id) {
+		return repositorio.findById(id).get();
+	}
+
+	@Override
+	public Inmueble actualizar(Inmueble inmueble) {
+		return repositorio.save(inmueble);
+	}
+
+	@Override
+	public void eliminar(int id) {
+		repositorio.deleteById(id);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Page<Inmueble> listarTodoPaginacion(Pageable pageable) {
+		return repositorio.findAll(pageable);
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Page<Inmueble> listarTodoConFiltro(String filtro, Pageable pageable) {
+		if (filtro != null && !filtro.trim().isEmpty()) {
+	        return repositorio.filtrarPorDescripcionOServicio(filtro, pageable);
+	    }
+		return repositorio.findAll(pageable);
+	}
+
+	@Override
+	public Page<Inmueble> listarTodoConFiltroYDisponibilidad(String filtro, String disponibilidad, Pageable pageable) {
+		if ((filtro == null || filtro.trim().isEmpty()) && (disponibilidad == null || disponibilidad.isEmpty())) {
+	        return repositorio.findAll(pageable);
+	    } else if (filtro != null && !filtro.trim().isEmpty() && disponibilidad != null && !disponibilidad.isEmpty()) {
+	        return repositorio.findByFiltroAndDisponibilidad(filtro, disponibilidad, pageable);
+	    } else if (filtro != null && !filtro.trim().isEmpty()) {
+	        return repositorio.filtrarPorDescripcionOServicio(filtro, pageable);
+	    } else {
+	        return repositorio.findByDisponibilidad(disponibilidad, pageable);
+	    }
+	}
+	
+	@Override
+	public Page<Inmueble> listarConFiltrosAvanzados(String filtro, Double precioDesde, Double precioHasta,
+	                                                LocalDate fechaDesde, LocalDate fechaHasta,
+	                                                String estado, Pageable pageable) {
+
+	    Specification<Inmueble> spec = Specification.where(null);
+
+	    if (filtro != null && !filtro.isBlank()) {
+	        spec = spec.and((root, query, cb) ->
+	            cb.or(
+	                cb.like(cb.lower(root.get("nombre")), "%" + filtro.toLowerCase() + "%"),
+	                cb.like(cb.lower(root.get("descripcion")), "%" + filtro.toLowerCase() + "%"),
+	                cb.like(cb.lower(root.get("serviciosIncluidos")), "%" + filtro.toLowerCase() + "%")
+	            )
+	        );
+	    }
+
+	    if (precioDesde != null) {
+	        spec = spec.and((root, query, cb) ->
+	            cb.greaterThanOrEqualTo(root.get("precioPorNoche"), BigDecimal.valueOf(precioDesde)));
+	    }
+
+	    if (precioHasta != null) {
+	        spec = spec.and((root, query, cb) ->
+	            cb.lessThanOrEqualTo(root.get("precioPorNoche"), BigDecimal.valueOf(precioHasta)));
+	    }
+
+	    if (estado != null && !estado.isBlank()) {
+	        spec = spec.and((root, query, cb) ->
+	            cb.equal(cb.lower(root.get("disponibilidad")), estado.toLowerCase()));
+	    }
+
+	    return repositorio.findAll(spec, pageable);
+	}
+
+	
+}
