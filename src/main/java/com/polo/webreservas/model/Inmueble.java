@@ -2,6 +2,7 @@ package com.polo.webreservas.model;
 
 import java.math.BigDecimal;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -15,37 +16,44 @@ public class Inmueble {
     private int id;
 
     @NotNull
-    @Size(max = 100)
+    @NotBlank(message = "El nombre no puede estar vacío")
+    @Size(max = 100, message = "El nombre no debe exceder los 100 caracteres")
     @Column(name = "Nombre", nullable = false, length = 100)
     private String nombre;
 
-    @NotNull
-    @Positive
+    @NotNull(message = "La capacidad no puede estar vacio")
+    @Positive(message = "La capacidad debe ser un número positivo")
     @Column(name = "Capacidad", nullable = false)
     private int capacidad;
 
-    @NotNull
-    @Positive
+    @NotNull(message = "El numero de habitaciones no puede estar vacio")
+    @Positive(message = "El numero de habitaciones debe ser un número positivo")
     @Column(name = "Numero_Habitaciones", nullable = false)
     private int numeroHabitaciones;
-
-    @Size(max = 300)
-    @Column(name = "Descripcion", length = 300)
+    
+    @NotNull
+    @NotBlank(message = "La descripcion no puede estar vacio")
+    @Size(max = 300, message = "La descripcion no debe exceder los 300 caracteres")
+    @Column(name = "Descripcion", length = 300, nullable = false)
     private String descripcion;
 
-    @Size(max = 200)
-    @Column(name = "Servicios_Incluidos", length = 200)
+    @NotNull
+    @NotBlank(message = "Los servicios incluidos no pueden estar vacios")
+    @Size(max = 200, message = "Los servicios incluidos no deben exceder los 200 caracteres")
+    @Column(name = "Servicios_Incluidos", length = 200, nullable = false)
     private String serviciosIncluidos;
 
     @Column(name = "Disponibilidad", length = 2)
     private String disponibilidad;
 
-    @Positive
-    @Column(name = "Precio_Por_Noche", precision = 10, scale = 2)
+    @NotNull(message = "El precio por noche no puede estar vacio")
+    @Positive(message = "El precio por noche debe ser un número positivo")
+    @Column(name = "Precio_Por_Noche", precision = 10, scale = 2, nullable = false)
     private BigDecimal precioPorNoche;
 
-    @Size(max = 300)
-    @Column(name = "Imagen_Habitacion", length = 300)
+    @NotNull(message = "La imagen de la habitacion no puede estar vacia")
+    @Size(max = 300, message = "La imagen de la habitacion no debe exceder los 300 caracteres")
+    @Column(name = "Imagen_Habitacion", length = 300, nullable = false)
     private String imagenHabitacion;
 
     @NotNull(message = "Debe seleccionar un administrador")

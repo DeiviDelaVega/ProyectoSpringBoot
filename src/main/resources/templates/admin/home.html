@@ -4,10 +4,23 @@
 <meta charset="UTF-8">
 <title>Inicio Administrador</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" th:href="@{/css/PaginaInicioAdminCliente.css}">
 </head>
 <body>
 	<nav th:replace="admin/HeaderNavAdministrador :: nav"></nav>
 	<br>
-	<h1 class="text-center">Hola <span th:text="${nombreAdministrador}"></span>, Bienvenido a la vista de ADMINISTRADOR</h1>
+	<br>
+	<h1 class="text-center">
+	  	Hola <span th:text="${nombreAdministrador}"></span>
+	</h1>
+	<h2 class="text-center">
+	  	Bienvenido a la vista de ADMINISTRADOR
+	</h2>
+	<br>
+	<div class="banner-container">
+	    <img src="/imagenes/banner1.jpg" id="banner">
+	</div>
+	<br>
+	<script src="/js/AdminJs.js"></script>
 </body>
 </html>

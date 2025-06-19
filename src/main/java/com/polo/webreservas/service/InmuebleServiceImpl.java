@@ -67,4 +67,14 @@ public class InmuebleServiceImpl implements InmuebleService {
 	        return repositorio.findByDisponibilidad(disponibilidad, pageable);
 	    }
 	}
+
+	@Override
+	public Page<Inmueble> listarTodoConFiltroYDisponibilidadYAdmin(String filtro, String disponibilidad, Integer adminId, Pageable pageable) {
+		return repositorio.findByFiltroDisponibilidadYAdministrador(
+		        (filtro == null || filtro.isEmpty()) ? null : filtro,
+	                (disponibilidad == null || disponibilidad.isEmpty()) ? null : disponibilidad,
+	                adminId,
+	                pageable
+		        );
+	}
 }

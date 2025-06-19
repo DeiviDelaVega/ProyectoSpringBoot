@@ -44,6 +44,8 @@ public class ClienteServiceImpl implements ClienteService {
         emailService.sendEmail(cliente.getCorreo(), asunto, cuerpo);
 	}
 	
-	
-
+	@Override
+	public Cliente findByCorreo(String correo) {
+	    return clienteRepository.findByCorreo(correo);
+	}
 }
