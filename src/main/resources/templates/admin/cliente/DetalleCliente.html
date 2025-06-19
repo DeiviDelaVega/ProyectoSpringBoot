@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Detalle Cliente</title>
+
+	<!-- Bootstrap 4 -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+	<!-- Tus estilos -->
+	<link rel="stylesheet" th:href="@{/css/Cliente.css}">
+</head>
+
+<body>
+	<!-- Barra de navegación -->
+	<nav th:replace="admin/HeaderNavAdministrador :: nav"></nav>
+	<br>
+
+	<!-- Contenedor principal con estilos personalizados -->
+	<div class="list-clientes-container">
+
+		<!-- Título principal centrado -->
+		<h2 class="text-center section-title">
+			DETALLES DEL CLIENTE CON ID <span th:text="${cliente.idCliente}"></span>
+		</h2>
+
+		<!-- Subcontenedor estilizado -->
+		<div class="form-horizontal">
+			<h4 class="text-center">Consulta de datos</h4>
+			<hr />
+			<br />
+
+			<!-- Fila 1 -->
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label class="control-label">Nombre</label>
+					<p class="form-control" th:text="${cliente.nombre}"></p>
+				</div>
+				<div class="form-group col-md-6">
+					<label class="control-label">Apellido</label>
+					<p class="form-control" th:text="${cliente.apellido}"></p>
+				</div>
+			</div>
+
+			<!-- Fila 2 -->
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label class="control-label">N° Documento</label>
+					<p class="form-control" th:text="${cliente.nroDocumento}"></p>
+				</div>
+				<div class="form-group col-md-6">
+					<label class="control-label">Dirección</label>
+					<p class="form-control" th:text="${cliente.direccion}"></p>
+				</div>
+			</div>
+
+			<!-- Fila 3 -->
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label class="control-label">Teléfono</label>
+					<p class="form-control" th:text="${cliente.numeroTelf}"></p>
+				</div>
+				<div class="form-group col-md-6">
+					<label class="control-label">Correo</label>
+					<p class="form-control" th:text="${cliente.correo}"></p>
+				</div>
+			</div>
+
+			<!-- Botón regresar -->
+			<div class="button-group-container mt-4">
+				<a class="btn btn-secondary" th:href="@{/admin/cliente}">Volver</a>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

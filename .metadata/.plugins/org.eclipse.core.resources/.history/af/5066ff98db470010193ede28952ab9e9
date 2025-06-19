@@ -1,0 +1,53 @@
+package com.polo.webreservas.controller;
+
+import com.polo.webreservas.model.Cliente;
+import com.polo.webreservas.model.Reserva;
+import com.polo.webreservas.service.ClienteService;
+import com.polo.webreservas.service.ReservaService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Controller
+@RequestMapping("/reservas")
+public class ReservaController {
+
+    @Autowired
+    private ReservaService reservaService;
+
+    @Autowired
+    private ClienteService clienteService;
+
+    @GetMapping
+    public String listarReservas(
+            @RequestParam(value = "clienteId", required = false) Integer clienteId,
+            @RequestParam(value = "fechaInicio", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            Model model) {
+
+        List<Cliente> clientes = clienteService.listarTodos();
+        List<Reserva> reservas;
+
+        if (clienteId != null && fechaInicio != null) {
+            reservas = reservaService.buscarPorClienteYFecha(clienteId, fechaInicio);
+        } else if (clienteId != null) {
+            reservas = reservaService.buscarPorCliente(clienteId);
+        } else if (fechaInicio != null) {
+            reservas = reservaService.buscarPorFechaInicio(fechaInicio);
+        } else {
+            reservas = reservaService.listarTodas();
+        }
+
+        model.addAttribute("reservas", reservas);
+        model.addAttribute("clientes", clientes);
+        model.addAttribute("clienteSeleccionado", clienteId);
+        model.addAttribute("fechaSeleccionada", fechaInicio);
+
+        return "reserva/lista";
+    }
+}

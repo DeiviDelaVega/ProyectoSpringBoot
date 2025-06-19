@@ -31,13 +31,13 @@ import org.springframework.validation.BindingResult;
 public class InmuebleController {
 	@Autowired
 	private AdminService admiService;
-	
+
 	@Autowired
 	private InmuebleService inmuService;
-	
+
 	@Autowired
 	private CloudinaryService clouService;
-	
+
 	@GetMapping("/inmuebles")
 	public String listar(@RequestParam(name = "page", defaultValue = "0") int page, 
 						@RequestParam(name = "filtro", required = false) String filtro, 
@@ -66,7 +66,7 @@ public class InmuebleController {
 	    
 		return "admin/inmueble/MantInmueble";
 	}
-	
+
 	@GetMapping("/inmuebles/nuevo")
 	public String mostrarFormularioDeRegistro(Model modelo) {
 		Inmueble inmueble = new Inmueble();
@@ -74,7 +74,7 @@ public class InmuebleController {
 		modelo.addAttribute("inmueble", inmueble);
 		return "admin/inmueble/CrearInmueble";
 	}
-	
+
 	@PostMapping("/inmuebles")
 	public String guardar(@Valid @ModelAttribute("inmueble") Inmueble inmueble,
 	                      BindingResult result,
@@ -120,14 +120,12 @@ public class InmuebleController {
 	    return "redirect:/admin/inmueble/inmuebles";
 	}
 
-
-	
 	@GetMapping("/inmuebles/detalle/{id}")
 	public String verDetalleInmueble(@PathVariable int id, Model modelo) {
-	    modelo.addAttribute("inmueble", inmuService.obtenerPorId(id));
-	    return "admin/inmueble/DetalleInmueble"; 
+		modelo.addAttribute("inmueble", inmuService.obtenerPorId(id));
+		return "admin/inmueble/DetalleInmueble";
 	}
-	
+
 	@GetMapping("/inmuebles/editar/{id}")
 	public String mostrarFormularioEditar(@PathVariable int id, Model modelo) {
 		modelo.addAttribute("inmueble", inmuService.obtenerPorId(id));
@@ -169,7 +167,7 @@ public class InmuebleController {
 
 	    return "redirect:/admin/inmueble/inmuebles";
 	}
-	
+
 	@GetMapping("/inmuebles/{id}")
 	public String eliminar(@PathVariable int id, RedirectAttributes redirectAttributes) {
 	    Inmueble inmueble = inmuService.obtenerPorId(id);
@@ -185,5 +183,4 @@ public class InmuebleController {
 	    }
 	    return "redirect:/admin/inmueble/inmuebles";
 	}
-
 }

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Reservas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Listado de Reservas</h2>
+
+    <!-- Botón para nueva reserva -->
+    <div class="mb-3">
+        <a th:href="@{/reservas/nueva}" class="btn btn-success">Nueva Reserva</a>
+    </div>
+
+    <!-- Tabla de reservas -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Inmueble</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>Método Pago</th>
+                <th>Monto Total</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+		<tbody>
+		<tr th:each="reserva : ${reservas}">
+		    <td th:text="${reserva.id}"></td>
+		    <td th:text="${reserva.cliente.nombre}"></td>
+		    <td th:text="${reserva.inmueble.nombre}"></td>
+		    <td th:text="${reserva.fechaInicio}"></td>
+		    <td th:text="${reserva.fechaFin}"></td>
+		    <td th:text="${reserva.metodoPago}"></td>
+		    <td th:text="${#numbers.formatDecimal(reserva.montoTotal, 1, 2)}"></td>
+		    <td th:text="${reserva.estadoReserva}"></td>
+		    <td>
+		        <a th:href="@{'/reservas/editar/' + ${reserva.id}}">Editar</a> |
+		        <a th:href="@{'/reservas/eliminar/' + ${reserva.id}}">Eliminar</a>
+		    </td>
+		</tr>
+		</tbody>
+    </table>
+</div>
+</body>
+</html>

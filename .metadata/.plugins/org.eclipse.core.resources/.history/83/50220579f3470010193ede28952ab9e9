@@ -1,0 +1,28 @@
+package com.polo.webreservas.service;
+
+import com.polo.webreservas.model.Reserva;
+import com.polo.webreservas.repository.ReservaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+
+@Service
+public class ReservaServiceImpl implements ReservaService {
+
+    @Autowired
+    private ReservaRepository reservaRepository;
+
+    @Override
+    public Page<Reserva> BuscarPorFechas(LocalDate fechaInicio, LocalDate fechaFin, Pageable pageable) {
+        return reservaRepository.findByFechaInicioGreaterThanEqualAndFechaFinLessThanEqual(fechaInicio, fechaFin, pageable);
+    }
+
+    @Override
+    public Page<Reserva> listarTodas(Pageable pageable) {
+        return reservaRepository.findAll(pageable);
+    }
+
+}
