@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- CSS personalizado -->
+<link rel="stylesheet" th:href="@{/css/NavAdministrador.css}">
+<body>
+	<div th:fragment="nav">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		    <div class="container">
+		        <a class="navbar-brand" href="#" style="font-size: 24px"><strong>ADMINISTRADOR</strong></a>
+		        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar"
+		                aria-controls="collapsibleNavbar" aria-expanded="false" aria-label="Toggle navigation">
+		            <span class="navbar-toggler-icon"></span>
+		        </button>
+		        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+		            <ul class="navbar-nav ms-auto">
+		            	<li class="nav-item">
+		                    <a class="nav-link px-3 rounded" href="/admin/home">📌 Inicio </a>
+		                </li>
+		                <li class="nav-item">
+		                    <a class="nav-link px-3 rounded" href="/admin/cliente">🛠️ Mantenimiento de Clientes</a>
+		                </li>
+		                <li class="nav-item">
+		                    <a class="nav-link px-3 rounded" href="/admin/inmueble/inmuebles">🛠️ Mantenimiento de Inmuebles</a>
+		                </li>
+		                <li class="nav-item">
+							<a class="nav-link px-3 rounded" href="/admin/reserva/reservas">🛠️ Mantenimiento de Reservas</a>
+		                </li>
+		                <form th:action="@{/logout}" method="post" class="form-inline d-inline">
+						    <button class="btn btn-danger btn-sm" type="submit">Cerrar sesión</button>
+						</form>
+		            </ul>
+		        </div>
+		    </div>
+		</nav>
+	</div>
+</body>
+</html>

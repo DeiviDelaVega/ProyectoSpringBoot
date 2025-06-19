@@ -21,42 +21,44 @@ import lombok.Setter;
 @Setter
 
 @Entity
-@Table(name = "Cliente", uniqueConstraints =  {@UniqueConstraint(columnNames = "Correo"), @UniqueConstraint(columnNames = "nroDocumento")})
+@Table(name = "Cliente", uniqueConstraints = { @UniqueConstraint(columnNames = "Correo"),
+		@UniqueConstraint(columnNames = "nroDocumento") })
 @NamedQuery(name = "Cliente", query = "select e from Cliente e")
 public class Cliente {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID_Cliente")
 	private int idCliente;
+
 
 	@NotNull
 	@Column(nullable = false)
 	private String nombre;
-	
+
 	@NotNull
 	@Column(nullable = false)
 	private String apellido;
-	
+
 	@NotNull
-	@Column(nullable = false, unique = true)
+	@Column(name="Nro_Documento", nullable = false, unique = true)
 	@Size(min = 8, max = 8, message = "El numero de documento debe  tener 8 digitos")
 	@Pattern(regexp = "\\d{8}", message = "El número de documento debe contener solo números")
 	private String nroDocumento;
-	
+
 	@NotNull
 	@Column(nullable = false)
 	private String direccion;
-	
+
 	@NotNull
 	@Size(min = 9, max = 9, message = "El número de teléfono debe tener 9 dígitos")
 	@Pattern(regexp = "\\d{9}", message = "El número de teléfono debe contener solo números")
-	@Column(nullable = false)
+	@Column(name="Numero_Telf",nullable = false)
 	private String numeroTelf;
 	
-	@NotNull
-	@Column(nullable = false)
+	@Column(name = "FechaRegistro", nullable = false)
 	private LocalDateTime fechaRegistro;
-	
+  
 	@Email
 	@NotNull
 	@Column(name = "Correo", nullable = false, unique = true)
@@ -156,10 +158,5 @@ public class Cliente {
 	public void setCorreo(String correo) {
 		this.correo = correo;
 	}
-
-
-	
-
-	
 
 }
