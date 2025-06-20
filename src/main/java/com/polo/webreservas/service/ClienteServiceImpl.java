@@ -10,7 +10,6 @@ import com.polo.webreservas.model.Rol;
 import com.polo.webreservas.repository.ClienteRepository;
 import com.polo.webreservas.repository.UsuarioRepository;
 import org.springframework.transaction.annotation.Transactional;
-import lombok.RequiredArgsConstructor; 
 
 @Service
 public class ClienteServiceImpl implements ClienteService {

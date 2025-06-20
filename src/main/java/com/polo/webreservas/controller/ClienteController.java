@@ -1,20 +1,15 @@
 package com.polo.webreservas.controller;
 
-import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.polo.webreservas.model.Cliente;
 import com.polo.webreservas.service.ClienteService;
 import org.springframework.ui.Model;
-import com.polo.webreservas.model.Cliente;
-import com.polo.webreservas.service.ClienteService;
 import com.polo.webreservas.util.PageRender;
 import java.nio.charset.StandardCharsets;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
 
@@ -27,18 +22,6 @@ public class ClienteController {
     public ClienteController(ClienteService servicio) {
         this.servicio = servicio;
     }
-
-    @GetMapping("/home")
-	public String homeCliente(Model model, Principal principal) {
-	    String clienteEmail = principal.getName();
-	    Cliente cliente = servicio.findByCorreo(clienteEmail);
-	    if (cliente != null) {
-	        model.addAttribute("nombreCliente", cliente.getNombre() + " " + cliente.getApellido());
-	    } else {
-	        model.addAttribute("nombreCliente", "Desconocido");
-	    }
-	    return "cliente/home";
-	}
 
     @GetMapping({"", "/"})
     public String listarClientes(
