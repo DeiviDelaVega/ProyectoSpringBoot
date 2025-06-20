@@ -1,10 +1,10 @@
 package com.polo.webreservas.controller;
 
 import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,12 +12,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriUtils;
-
+import com.polo.webreservas.model.Cliente;
 import com.polo.webreservas.model.Inmueble;
+import com.polo.webreservas.service.ClienteService;
 import com.polo.webreservas.service.InmuebleService;
 import com.polo.webreservas.util.PageRender;
 
@@ -27,12 +27,22 @@ import com.polo.webreservas.util.PageRender;
 public class CatalogoController {
 	@Autowired
 	private InmuebleService inmuebleService;
+	
+	@Autowired
+	private ClienteService servicio;
 
 	@GetMapping("/home")
-    public String PagPrin() {
-        return "cliente/home";   
+    public String homeCliente(Model model, Principal principal) {
+        String clienteEmail = principal.getName();
+        Cliente cliente = servicio.findByCorreo(clienteEmail);
+        if (cliente != null) {
+            model.addAttribute("nombreCliente", cliente.getNombre() + " " + cliente.getApellido());
+        } else {
+            model.addAttribute("nombreCliente", "Desconocido");
+        }
+        return "cliente/home";
     }
-	
+
 	@GetMapping("/catalogo/verInmueble")
 	public String verCatalogoInmuebles(
 	        @RequestParam(defaultValue = "0") int page,

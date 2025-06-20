@@ -1,10 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Nosotros</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	crossorigin="anonymous">
+<link rel="stylesheet" th:href="@{/css/PaginaPrincipal.css}">
 </head>
 <body>
-<h1>HOLA</h1>
+	<nav style="background-color: #212529; height: 81px; padding: 15px 85px;">
+		<div
+			style="display: flex; justify-content: space-between; align-items: center; height: 100%;">
+
+			<a href="#" 
+				style="color: white; font-size: 2.4rem; text-decoration: none;">
+				<strong class="navbar">Web de Reservas</strong>
+			</a>
+			
+			<div class="d-flex justify-content-center align-items-center">
+			    <div sec:authorize="isAuthenticated()" class="d-flex justify-content-center align-items-center">
+			        <button class="btn btn-secondary btn-sm"
+			                style="font-size: 1.2rem; padding: 10px 20px; margin-right: 10px;"
+			                onclick="history.back();">
+			            <strong>Volver</strong>
+			        </button>
+			
+			        <form th:action="@{/logout}" method="post" style="display: inline-block; margin: 0; padding: 0;">
+			            <button class="btn btn-danger btn-sm"
+			                    style="font-size: 1.2rem; padding: 10px 20px;"
+			                    type="submit">
+			                <strong>Cerrar sesión</strong>
+			            </button>
+			        </form>
+			    </div>
+			
+			    <div sec:authorize="isAnonymous()" style="margin-left: 10px;">
+			        <a href="/login" class="btn btn-success"
+			           style="font-size: 1.2rem; padding: 10px 20px;">
+			            <strong>Iniciar sesión</strong>
+			        </a>
+			    </div>
+			</div>
+		</div>
+	</nav>
+
+	<header>
+		<h1>Monterrico Polo Aparts</h1>
+		<p>Comodidad, estilo y ubicación en un solo lugar</p>
+	</header>
+	<br>
+	<br>
+	<br>
+	<div class="container">
+		<section>
+			<img th:src="@{/imagenes/InmueblesModernos.jpg}"
+				alt="Inmuebles modernos" />
+			<div class="texto">
+				<h2>¿Quiénes Somos?</h2>
+				<p>Monterrico Polo Aparts es una empresa peruana especializada
+					en el alquiler de departamentos amoblados, pensados para estancias
+					tanto cortas como prolongadas. Con más de 10 años de experiencia,
+					nos hemos consolidado como una opción confiable y segura para
+					quienes buscan alojamiento de calidad en la zona de Surco. Nos
+					apasiona ofrecer una experiencia única a nuestros clientes, donde
+					el confort, la privacidad y el diseño moderno se combinan con una
+					atención personalizada y cálida.</p>
+			</div>
+		</section>
+
+		<section>
+			<img th:src="@{/imagenes/MisiónEmpresarial.jpg}"
+				alt="Misión empresarial" />
+			<div class="texto">
+				<h2>Misión</h2>
+				<p>Nuestra misión es brindar soluciones de alojamiento
+					eficientes, seguras y cómodas, a través de departamentos equipados
+					y servicios complementarios que superen las expectativas de
+					nuestros huéspedes. Nos comprometemos con la excelencia operativa,
+					la innovación constante y la creación de experiencias memorables
+					que generen confianza y fidelidad en cada cliente.</p>
+			</div>
+		</section>
+
+		<section>
+			<img th:src="@{/imagenes/VisiónEmpresarial.jpg}"
+				alt="Visión empresarial" />
+			<div class="texto">
+				<h2>Visión</h2>
+				<p>Ser reconocidos como la principal empresa de alquiler de
+					inmuebles temporales en Surco y expandir nuestra propuesta a otras
+					ciudades del país, destacando por la calidad de nuestros espacios,
+					el profesionalismo de nuestro equipo y un compromiso firme con la
+					sostenibilidad y el desarrollo urbano responsable.</p>
+			</div>
+		</section>
+
+	</div>
+
+	<footer> &copy; 2025 Monterrico Polo Aparts. Todos los
+		derechos reservados. </footer>
 </body>
 </html>

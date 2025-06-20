@@ -14,11 +14,7 @@ import com.polo.webreservas.service.AdminService;
 public class AdminController {
 	
 	@Autowired
-	private final AdminService adminService;
-    
-    public AdminController(AdminService adminService) {
-        this.adminService = adminService;
-    }
+	private AdminService adminService;
 
     @GetMapping("/home")
     public String adminHome(Model model, Principal principal) {

@@ -1,0 +1,13 @@
+package com.polo.webreservas.service;
+
+import java.util.List;
+import com.polo.webreservas.model.Reserva;
+
+public interface ReservaService {
+    List<Reserva> listarTodas();
+    Reserva guardar(Reserva reserva);
+    Reserva buscarPorId(Integer id);
+    List<Reserva> buscarPorCliente(String cliente); 
+    void eliminarPorId(Integer id);
+    Reserva actualizar(Reserva reserva);
+}

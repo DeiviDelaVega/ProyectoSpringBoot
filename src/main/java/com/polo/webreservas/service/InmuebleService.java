@@ -14,6 +14,7 @@ public interface InmuebleService {
 	public Page<Inmueble> listarTodoPaginacion(Pageable pageable);
 	public Page<Inmueble> listarTodoConFiltro(String filtro, Pageable pageable);
 	public Page<Inmueble> listarTodoConFiltroYDisponibilidad(String filtro, String disponibilidad, Pageable pageable);
+	public Page<Inmueble> listarTodoConFiltroYDisponibilidadYAdmin(String filtro, String disponibilidad, Integer adminId, Pageable pageable);
 	public Inmueble guardar(Inmueble inmueble);
 	public Inmueble obtenerPorId(int id);
 	public Inmueble actualizar(Inmueble inmueble);

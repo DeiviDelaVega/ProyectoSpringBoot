@@ -1,0 +1,12 @@
+package com.polo.webreservas.service;
+
+import java.awt.print.Pageable;
+import java.time.LocalDate;
+import java.util.List;
+import com.polo.webreservas.model.Reserva;
+
+public interface ReservaService {
+    List<Reserva> listarTodas(Pageable pageable);
+    List<Reserva> buscarPorRangoFechas(LocalDate fechaInicio, LocalDate fechaFin, Pageable pageable);
+
+}

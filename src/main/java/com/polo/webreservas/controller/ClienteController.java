@@ -1,23 +1,22 @@
 package com.polo.webreservas.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import com.polo.webreservas.model.Cliente;
 import com.polo.webreservas.service.ClienteService;
+import org.springframework.ui.Model;
 import com.polo.webreservas.util.PageRender;
-
 import java.nio.charset.StandardCharsets;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
-
 
 @Controller
 @RequestMapping("/admin/cliente")
 public class ClienteController {
-
+    @Autowired
     private final ClienteService servicio;
 
     public ClienteController(ClienteService servicio) {
@@ -52,7 +51,6 @@ public class ClienteController {
 
         return "admin/cliente/cliente";
     }
-
 
     @GetMapping("/detalle/{id}")
     public String verDetalle(@PathVariable Integer id, Model modelo) {

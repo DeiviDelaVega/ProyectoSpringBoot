@@ -1,0 +1,151 @@
+@charset "UTF-8";
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    color: #1a1a1a;
+}
+
+.navbar {
+    margin-bottom: 0px;
+    padding: 15px 70px;
+}
+
+.navbar a {
+    color: white !important;
+}
+
+.navbar-brand strong{
+	font-size: 24px;
+}
+
+.navbar-inverse {
+    background-color: #212529;
+    border-color: #080808;
+}
+
+.navbar-inverse .navbar-brand {
+    color: #9d9d9d;
+}
+
+h2.text-center{
+    text-align: center;
+    color: #000;
+    animation: fadeIn 1.5s ease-in-out;
+    text-shadow: 3px 3px 6px rgba(50, 50, 50, 0.6);
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-horizontal {
+    padding: 35px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    border-top: 5px solid #333;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.form-horizontal:hover {
+    transform: translateY(-5px);
+}
+
+label {
+    color: #333;
+    font-size: 1.6rem;           
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 1.5rem;              
+    height: calc(2em + 1rem + 4px); 
+    padding: 0.7rem 1.2rem;    
+}
+
+.form-control:focus {
+    border-color: #333;
+    box-shadow: 0 0 6px rgba(51, 51, 51, 0.3);
+}
+
+.btn-submit {
+    background-color: #000;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    font-size: 1.7rem;
+    padding: 1.1rem 2rem;
+    border-radius: 8px;
+}
+
+.alert {
+    font-size: 1.4rem; 
+    padding: 1rem 1.5rem;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.alert-info {
+    background-color: #d9edf7;
+    color: #31708f;
+}
+
+.alert-success {
+    background-color: #dff0d8;
+    color: #3c763d;
+}
+
+.alert-danger {
+    background-color: #f2dede;
+    color: #a94442;
+}
+
+.back-link {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.back-link a {
+    color: #111;
+    text-decoration: none;
+    font-size: 1.4rem;
+    transition: color 0.2s ease;
+}
+
+.back-link a:hover {
+    text-decoration: underline;
+    color: #555;
+}
+
+.containerRegistro {
+	margin-left: 20%;
+	margin-right: 20%;
+}
+
+.row {
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+.back-link p {
+    font-size: 1.4rem;
+}

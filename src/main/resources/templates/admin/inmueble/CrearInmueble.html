@@ -3,72 +3,230 @@
 <head>
 <meta charset="UTF-8">
 <title>Crear Inmueble</title>
-<!-- CSS only -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+<link rel="stylesheet" th:href="@{/css/MantInmueble.css}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 <body>
 	<nav th:replace="admin/HeaderNavAdministrador :: nav"></nav>
 	<br>
 	<div class="container">
-	   <div class="row">
-	      <div class="col-lg-8 col-md-10 col-sm-12 container justify-content-center card">
-	         <h1 class="text-center">Registro de Inmuebles</h1>
-	         <div class="card-body">
-	         	<form th:action="@{/admin/inmueble/inmuebles}" th:object="${inmueble}" method="POST" enctype="multipart/form-data">
-	               
-	               <div class="form-group">
-	                  <label>Nombre</label>
-	                  <input type="text" th:field="*{nombre}" class="form-control" placeholder="Nombre del inmueble" required>
-	               </div>
-	
-	               <div class="form-group">
-	                  <label>Capacidad</label>
-	                  <input type="number" th:field="*{capacidad}" class="form-control" placeholder="Capacidad del inmueble" required>
-	               </div>
-	
-	               <div class="form-group">
-	                  <label>Número de Habitaciones</label>
-	                  <input type="number" th:field="*{numeroHabitaciones}" class="form-control" placeholder="Número de habitaciones" required>
-	               </div>
-	
-	               <div class="form-group">
-	                  <label>Descripción</label>
-	                  <textarea th:field="*{descripcion}" class="form-control" rows="3" placeholder="Descripción del inmueble"></textarea>
-	               </div>
-	
-	               <div class="form-group">
-	                  <label>Servicios Incluidos</label>
-	                  <input type="text" th:field="*{serviciosIncluidos}" class="form-control" placeholder="Servicios incluidos">
-	               </div>
-	
-	               <div class="form-group">
-					   <label>Disponibilidad</label>
-					   <select th:field="*{disponibilidad}" class="form-control" required>
-					      <option value="Si" th:selected="${inmueble.disponibilidad == 'Si'}">Si</option>
-					      <option value="No" th:selected="${inmueble.disponibilidad == 'No'}">No</option>
-					   </select>
-					</div>
-	
-	               <div class="form-group">
-	                  <label>Precio por Noche</label>
-	                  <input type="number" step="0.01" th:field="*{precioPorNoche}" class="form-control" placeholder="Precio por noche" required>
-	               </div>
-					
-					<div class="form-group">
-					    <label>Imagen Habitación</label>
-					    <input type="file" name="file" class="form-control" required>
-					</div>
-	
-	               <div class="box-footer">
-	                  <button class="btn btn-success">Guardar</button>
-	               </div>
-	               
-	               <a class="btn btn-primary mt-3" th:href="@{/admin/inmueble/inmuebles}">Volver</a>
-	
-	            </form>
-	         </div>
-	      </div>
-	   </div>
+		<div class="row">
+			<div
+				class="container mt-4 justify-content-center">
+				<h2 class="text-center">REGISTRO DE INMUEBLES</h2>
+				<div>
+					<form th:action="@{/admin/inmueble/inmuebles}" th:object="${inmueble}" method="POST"
+						enctype="multipart/form-data" id="form-registro" class="form-horizontal">
+						<h4 class="text-center">Registrar un nuevo inmueble en el sistema</h4>
+	        			<hr />
+	        			<br>
+						<div class="form-row">
+					        <div class="form-group col-md-6">
+							    <label><strong class="label.strong">Nombre</strong></label>
+							    <input type="text"
+							           th:field="*{nombre}"
+							           class="form-control"
+							           th:classappend="${#fields.hasErrors('nombre')} ? ' is-invalid' : ''"
+							           placeholder="Nombre del inmueble">
+							    <div class="invalid-feedback"
+							         th:if="${#fields.hasErrors('nombre')}"
+							         th:errors="*{nombre}">Error en nombre</div>
+							</div>
+														
+							<div class="form-group col-md-6">
+							    <label><strong class="label.strong">Capacidad</strong></label>
+							    <input type="number"
+							           th:field="*{capacidad}"
+							           class="form-control"
+							           min="1"
+							           step="1"
+							           oninput="validity.valid||(value='');"
+							           th:classappend="${#fields.hasErrors('capacidad')} ? ' is-invalid' : ''"
+							           placeholder="Capacidad del inmueble"
+							           required>
+							
+							    <div class="invalid-feedback" th:if="${#fields.hasErrors('capacidad')}">
+							        <span th:if="${#fields.errors('capacidad')[0].contains('Failed to convert property value')}">
+							            La capacidad debe ser un número entero válido.
+							        </span>
+							        <span th:unless="${#fields.errors('capacidad')[0].contains('Failed to convert property value')}"
+							              th:errors="*{capacidad}">
+							        </span>
+							    </div>
+							</div>
+						</div>
+
+						<div class="form-row">
+							<div class="form-group col-md-6">
+							    <label><strong class="label.strong">Número de Habitaciones</strong></label>
+							    <input type="number"
+							           th:field="*{numeroHabitaciones}"
+							           class="form-control"
+							           min="1"
+							           step="1"
+							           oninput="validity.valid||(value='');"
+							           th:classappend="${#fields.hasErrors('numeroHabitaciones')} ? ' is-invalid' : ''"
+							           placeholder="Número de habitaciones"
+							           required>
+							    <div class="invalid-feedback" th:if="${#fields.hasErrors('numeroHabitaciones')}">
+							        <span th:if="${#fields.errors('numeroHabitaciones')[0].contains('Failed to convert property value')}">
+							            El numero de habitaciones debe ingresar un número entero válido.
+							        </span>
+							        <span th:unless="${#fields.errors('numeroHabitaciones')[0].contains('Failed to convert property value')}"
+							              th:errors="*{numeroHabitaciones}">
+							        </span>
+							    </div>
+							</div>
+							
+							<div class="form-group col-md-6">
+							    <label><strong class="label.strong">Precio por Noche (S/.)</strong></label>
+							    <input type="number"
+							           th:field="*{precioPorNoche}"
+							           class="form-control"
+							           min="0.01"
+							           step="0.01"
+							           th:classappend="${#fields.hasErrors('precioPorNoche')} ? ' is-invalid' : ''"
+							           placeholder="Precio por noche"
+							           required>
+							    <div class="invalid-feedback" th:if="${#fields.hasErrors('precioPorNoche')}">
+							        <span th:if="${#fields.errors('precioPorNoche')[0].contains('Failed to convert property value')}">
+							            El precio por noche debe ingresar un número positivo válido.
+							        </span>
+							        <span th:unless="${#fields.errors('precioPorNoche')[0].contains('Failed to convert property value')}"
+							              th:errors="*{precioPorNoche}">
+							        </span>
+							    </div>
+							</div>
+						</div>
+						
+						<div class="form-group">
+						    <label><strong class="label.strong">Descripción</strong></label>
+						    <textarea th:field="*{descripcion}"
+						              class="form-control" rows="3"
+						              style="width: 94.5%;"
+						              placeholder="Descripción del inmueble"
+						              th:classappend="${#fields.hasErrors('descripcion')} ? ' is-invalid' : ''"
+						              required>
+						     </textarea>
+							 <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
+						</div>
+						
+						<div class="form-row">
+							<div class="form-group col-md-6">
+							    <label><strong class="label.strong">Servicios Incluidos</strong></label>
+							    <input type="text"
+							           th:field="*{serviciosIncluidos}"
+							           class="form-control"
+							           th:classappend="${#fields.hasErrors('serviciosIncluidos')} ? ' is-invalid' : ''"
+							           placeholder="Servicios incluidos"
+							           maxlength="200"
+							           required>
+							    <div class="invalid-feedback" th:if="${#fields.hasErrors('serviciosIncluidos')}"
+							         th:errors="*{serviciosIncluidos}">
+							        Error en los servicios incluidos
+							    </div>
+							</div>
+							
+							<div class="form-group col-md-6">
+								<label><strong class="label.strong">Disponibilidad</strong></label>
+								<select th:field="*{disponibilidad}" class="form-control"
+									required>
+									<option value="Si"
+										th:selected="${inmueble.disponibilidad == 'Si'}">Si</option>
+									<option value="No"
+										th:selected="${inmueble.disponibilidad == 'No'}">No</option>
+								</select>
+							</div>
+						</div>
+
+						<input type="hidden" name="administrador.id"
+							th:value="${inmueble.administrador.id}" />
+
+						<div class="form-group col-md-12 text-center">
+						    <label><strong>Imagen Habitación</strong></label>
+						    <div style="display: flex; justify-content: center; align-items: center; height: 60px;">
+						        <input type="file"
+						               name="file"
+						               class="form-control"
+						               th:classappend="${#fields.hasErrors('serviciosIncluidos')} ? ' is-invalid' : ''"
+						               id="input-imagen"
+						               accept="image/*"
+						               onchange="validarImagen(event)">
+						    </div>
+						    <div th:if="${error}" class="invalid-feedback d-block text-center" id="error-imagen">
+							    <p th:text="${error}"></p>
+							</div>
+						</div>
+
+						<div class="button-group-container">
+							<button type="button" class="btn btn-dark"
+								onclick="confirmarRegistro()">Guardar</button>
+							<div class="button-spacer"></div>
+							<a class="btn btn-secondary"
+								th:href="@{/admin/inmueble/inmuebles}">Volver</a>
+						</div>
+						
+						<script>
+							function validarImagen(event) {
+							    const input = event.target;
+							    const archivo = input.files[0];
+							    const errorDiv = document.getElementById("error-imagen");
+							    const nombreSpan = document.getElementById("nombre-actual");
+							
+							    errorDiv.style.display = "none";
+							    errorDiv.textContent = "";
+							
+							    if (archivo) {
+							        const tiposPermitidos = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
+							        const tamañoMaximoMB = 10;
+							
+							        // Validar tipo
+							        if (!tiposPermitidos.includes(archivo.type)) {
+							            errorDiv.textContent = "Solo se permiten imágenes JPG, PNG, GIF o WEBP.";
+							            errorDiv.style.display = "block";
+							            input.value = "";
+							            return;
+							        }
+							
+							        // Validar tamaño
+							        if (archivo.size > tamañoMaximoMB * 1024 * 1024) {
+							            errorDiv.textContent = "La imagen no debe superar los " + tamañoMaximoMB + "MB.";
+							            errorDiv.style.display = "block";
+							            input.value = "";
+							            return;
+							        }
+							    }
+							}
+						</script>
+						
+						<script>
+							function confirmarRegistro() {
+							    Swal.fire({
+							        title: '¿Estás seguro de registrar este inmueble?',
+							        text: "Luego podrás editarlo si es necesario",
+							        icon: 'warning',
+							        showCancelButton: true,
+						            confirmButtonColor: '#d33',
+						            cancelButtonColor: '#3085d6',
+							        confirmButtonText: 'Sí, registrar',
+							        cancelButtonText: 'Cancelar'
+							    }).then((result) => {
+							        if (result.isConfirmed) {
+							            document.getElementById('form-registro').submit();
+							        }
+							    });
+							}
+						</script>
+					</form>
+				</div>
+			</div>
+		</div>
 	</div>
 </body>
 </html>

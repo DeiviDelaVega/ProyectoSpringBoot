@@ -2,23 +2,17 @@ package com.polo.webreservas.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import com.polo.webreservas.model.Cliente;
 import com.polo.webreservas.model.Rol;
 import com.polo.webreservas.repository.ClienteRepository;
 import com.polo.webreservas.repository.UsuarioRepository;
-
 import org.springframework.transaction.annotation.Transactional;
-
-import lombok.RequiredArgsConstructor; 
 
 @Service
 public class ClienteServiceImpl implements ClienteService {
-
 	private ClienteRepository clienteRepository;
 	private UsuarioService usuarioService;
 	private final EmailService emailService;
@@ -46,6 +40,11 @@ public class ClienteServiceImpl implements ClienteService {
 	@Transactional(readOnly = true)
 	public List<Cliente> listarTodosLosClientes() {
 		return clienteRepository.findAll();
+	}
+
+	@Override
+	public Cliente findByCorreo(String correo) {
+	    return clienteRepository.findByCorreo(correo);
 	}
 
 	@Override
@@ -78,5 +77,4 @@ public class ClienteServiceImpl implements ClienteService {
         }
         return clienteRepository.filtrarPorApellidoONroDocumento(filtro.trim(), pageable);
     }
-
 }

@@ -1,0 +1,14 @@
+package com.polo.webreservas.repository;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.polo.webreservas.model.Cliente;
+import com.polo.webreservas.model.Reserva;
+
+public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
+	Cliente findByCorreo(String correo);
+	List<Reserva> findByClienteIdAndFechaInicio(Integer clienteId, LocalDate fechaInicio);
+
+}

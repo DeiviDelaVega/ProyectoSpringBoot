@@ -1,0 +1,15 @@
+package com.polo.webreservas.service;
+
+import com.polo.webreservas.model.Reserva;
+import com.polo.webreservas.repository.ReservaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+public interface ReservaService {
+    Page<Reserva> listarTodas(Pageable pageable);
+    Page<Reserva> buscarPorRangoFechas(LocalDate fechaInicio, LocalDate fechaFin, Pageable pageable);
+
+}
