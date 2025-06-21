@@ -9,6 +9,9 @@ import com.polo.webreservas.model.Cliente;
 import com.polo.webreservas.model.Rol;
 import com.polo.webreservas.repository.ClienteRepository;
 import com.polo.webreservas.repository.UsuarioRepository;
+
+import jakarta.mail.MessagingException;
+
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -32,8 +35,18 @@ public class ClienteServiceImpl implements ClienteService {
 		usuarioService.registrarUsuario(cliente.getCorreo(), clave, Rol.cliente);
 
 		String asunto = "Bienvenido a Polo Web Reservas";
-		String cuerpo = "Hola " + cliente.getNombre() + ", gracias por registrarte con nosotros.";
-		emailService.sendEmail(cliente.getCorreo(), asunto, cuerpo);
+
+		String cuerpoHtml = "<html>" + "<body style='font-family: Arial, sans-serif;'>"
+				+ "<h2 style='color: #2E86C1;'>¡Bienvenido a Polo Web Reservas! 🚀</h2>" + "<p>Hola <strong>"
+				+ cliente.getNombre() + "</strong>,</p>"
+				+ "<p>Gracias por registrarte con nosotros. Estamos encantados de tenerte.</p>"
+				+ "<p>Si tienes alguna consulta, no dudes en contactarnos.</p>"
+				+ "<p>Saludos cordiales,<br/>El equipo de Polo Web Reservas</p>" + "</body>" + "</html>";
+		try {
+			emailService.sendHtmlEmail(cliente.getCorreo(), asunto, cuerpoHtml);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -44,7 +57,7 @@ public class ClienteServiceImpl implements ClienteService {
 
 	@Override
 	public Cliente findByCorreo(String correo) {
-	    return clienteRepository.findByCorreo(correo);
+		return clienteRepository.findByCorreo(correo);
 	}
 
 	@Override
@@ -70,11 +83,11 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	@Override
-    @Transactional(readOnly = true)
-    public Page<Cliente> listarTodoConFiltro(String filtro, Pageable pageable) {
-        if (filtro == null || filtro.trim().isEmpty()) {
-            return clienteRepository.findAll(pageable);
-        }
-        return clienteRepository.filtrarPorApellidoONroDocumento(filtro.trim(), pageable);
-    }
+	@Transactional(readOnly = true)
+	public Page<Cliente> listarTodoConFiltro(String filtro, Pageable pageable) {
+		if (filtro == null || filtro.trim().isEmpty()) {
+			return clienteRepository.findAll(pageable);
+		}
+		return clienteRepository.filtrarPorApellidoONroDocumento(filtro.trim(), pageable);
+	}
 }

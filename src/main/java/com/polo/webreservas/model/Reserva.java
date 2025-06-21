@@ -57,7 +57,7 @@ public class Reserva {
 
     @NotNull
     @Size(max = 20)
-    @Pattern(regexp = "Cheque|Efectivo|Transferencia")
+    @Pattern(regexp = "Tarjeta", message = "Solo se permite el método de pago 'Tarjeta'")
     @Column(name = "Metodo_Pago")
     private String metodoPago;
 

@@ -74,6 +74,8 @@ public class ReservaController {
         model.addAttribute("reserva", reserva);
         return "admin/reserva/DetalleReservas";
     }
+    
+    
 
     
  // POST para actualizar el estado de una reserva
