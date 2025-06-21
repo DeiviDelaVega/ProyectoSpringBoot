@@ -15,7 +15,7 @@
 <body>
 	<nav th:replace="admin/HeaderNavAdministrador :: nav"></nav>
 		<br>
-<div class="list-clientes-container">
+<div class="list-clientes-container fade-in">
     <h2 class="section-title"><strong>MANTENIMIENTO DE INMUEBLES</strong></h2>
 	<br>
     <div class="d-flex mb-3" style="gap: 16px;">
@@ -23,7 +23,7 @@
 	        Agregar Inmueble
 	    </a>
 	
-	    <button id="toggleFiltrosBtn" class="btn btn-outline-secondary px-4 py-2 fs-6" onclick="toggleFiltros()">
+	    <button id="toggleFiltrosBtn" class="btn btn-outline-secondary px-4 py-2 fs-6">
 	        <i class="fa fa-sliders-h me-2"></i> Filtros
 	    </button>
 	</div>
@@ -95,7 +95,7 @@
 					<a href="javascript:void(0);"
 					   th:onclick="'confirmarEliminacion(\'/admin/inmueble/inmuebles/' + ${inmueble.id} + '\')'"
 					   title="Eliminar">
-					    <i class="fa fa-trash icon-action"></i>
+					    <i class="fa fa-trash icon-action text-danger"></i>
 					</a>
                 </td>
             </tr>
@@ -109,19 +109,27 @@
     </table>
     
     <script>
-	    function toggleFiltros() {
-	        const filtros = document.getElementById('filtrosForm');
-	        const boton = document.getElementById('toggleFiltrosBtn');
+	    document.addEventListener("DOMContentLoaded", function () {
+	        const filtros = document.getElementById("filtrosForm");
+	        const boton = document.getElementById("toggleFiltrosBtn");
 	
-	        if (filtros.style.display === 'none') {
-	            filtros.style.display = 'block';
-	            boton.textContent = 'Ocultar Filtros';
-	        } else {
-	            filtros.style.display = 'none';
-	            boton.innerHTML = '<i class="fa fa-sliders-h me-1"></i> Filtros';
-	        }
-	    }
-	    
+	        const visible = localStorage.getItem("filtrosVisibles") === "true";
+	        filtros.style.display = visible ? "block" : "none";
+	
+	        boton.innerHTML = visible
+	            ? 'Ocultar Filtros'
+	            : '<i class="fa fa-sliders-h me-1"></i> Filtros';
+	
+	        boton.addEventListener("click", function () {
+	            const currentlyVisible = filtros.style.display === "block";
+	            filtros.style.display = currentlyVisible ? "none" : "block";
+	            localStorage.setItem("filtrosVisibles", !currentlyVisible);
+	            boton.innerHTML = !currentlyVisible
+	                ? 'Ocultar Filtros'
+	                : '<i class="fa fa-sliders-h me-1"></i> Filtros';
+	        });
+	    });
+
 	    function confirmarEliminacion(url) {
 	        Swal.fire({
 	            title: '¿Estás seguro de eliminar este inmueble?',

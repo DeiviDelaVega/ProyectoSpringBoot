@@ -9,7 +9,7 @@
 	crossorigin="anonymous">
 <link rel="stylesheet" th:href="@{/css/PaginaPrincipal.css}">
 </head>
-<body>
+<body th:attr="data-rol=${#authentication.authorities[0].authority}">
 	<nav style="background-color: #212529; height: 81px; padding: 15px 85px;">
 		<div
 			style="display: flex; justify-content: space-between; align-items: center; height: 100%;">
@@ -23,8 +23,8 @@
 			    <div sec:authorize="isAuthenticated()" class="d-flex justify-content-center align-items-center">
 			        <button class="btn btn-secondary btn-sm"
 			                style="font-size: 1.2rem; padding: 10px 20px; margin-right: 10px;"
-			                onclick="history.back();">
-			            <strong>Volver</strong>
+			                onclick="volverPaginaAnterior();">
+			            <strong>Continuar Navegando</strong>
 			        </button>
 			
 			        <form th:action="@{/logout}" method="post" style="display: inline-block; margin: 0; padding: 0;">
@@ -101,5 +101,31 @@
 
 	<footer> &copy; 2025 Monterrico Polo Aparts. Todos los
 		derechos reservados. </footer>
+	
+	<script>
+	    function volverPaginaAnterior() {
+	        if (history.length > 1) {
+	            history.back();
+	        } else {
+	            const ultima = localStorage.getItem("ultimaPagina");
+	            if (ultima && ultima !== window.location.href) {
+	                localStorage.removeItem("ultimaPagina");
+	                window.location.href = ultima;
+	            } else {
+	                const rol = document.body.getAttribute("data-rol");
+	
+	                if (rol === "ROLE_admin") {
+	                    window.location.href = "/admin/home";
+	                } else if (rol === "ROLE_cliente") {
+	                    window.location.href = "/cliente/home";
+	                } else {
+	                    window.location.href = "/";
+	                }
+	            }
+	        }
+	    }
+	</script>
+	<!-- Para saber el nombre del rol -->
+	<!-- <p th:text="${#authentication.authorities}"></p> -->
 </body>
 </html>
