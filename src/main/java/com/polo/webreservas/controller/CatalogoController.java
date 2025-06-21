@@ -12,13 +12,16 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriUtils;
 import com.polo.webreservas.model.Cliente;
 import com.polo.webreservas.model.Inmueble;
 import com.polo.webreservas.service.ClienteService;
 import com.polo.webreservas.service.InmuebleService;
+import com.polo.webreservas.service.ReservaService;
 import com.polo.webreservas.util.PageRender;
 
 
@@ -30,6 +33,9 @@ public class CatalogoController {
 	
 	@Autowired
 	private ClienteService servicio;
+	
+	 @Autowired
+	 private ReservaService reservaService;
 
 	@GetMapping("/home")
     public String homeCliente(Model model, Principal principal) {
@@ -86,5 +92,18 @@ public class CatalogoController {
 	    
 	    return "cliente/catalogo/verInmueble";
 	}
+	
+	@GetMapping("/catalogo/detalle/{id}")
+	public String verDetalleInmueble(@PathVariable int id, Model modelo) {
+		modelo.addAttribute("inmueble", inmuebleService.obtenerPorId(id));
+		return "cliente/catalogo/DetalleInmueble";
+	}
+	
+	@GetMapping("/ocupadas/{idInmueble}")
+	@ResponseBody
+	public List<LocalDate> obtenerFechasOcupadas(@PathVariable Long idInmueble) {
+	    return reservaService.obtenerFechasOcupadas(idInmueble);
+	}
+
 
 }

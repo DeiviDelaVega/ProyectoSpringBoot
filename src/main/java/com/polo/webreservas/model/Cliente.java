@@ -56,7 +56,8 @@ public class Cliente {
 	@Column(name="Numero_Telf",nullable = false)
 	private String numeroTelf;
 	
-	@Column(name = "FechaRegistro", nullable = false)
+	@NotNull
+	@Column(name="fecha_registro",nullable = false)
 	private LocalDateTime fechaRegistro;
   
 	@Email

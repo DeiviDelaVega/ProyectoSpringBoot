@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+<meta charset="UTF-8">
+<title th:text="'Monterrico Polo Aparts - ' + ${inmueble.nombre}">Detalle</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+.inmueble-img {
+	width: 100%;
+	max-height: 400px;
+	object-fit: cover;
+	border-radius: 8px;
+}
+
+.precio-box {
+	border: 1px solid #ddd;
+	padding: 20px;
+	border-radius: 8px;
+	text-align: center;
+}
+
+.info-item {
+	margin-bottom: 10px;
+}
+
+.descripcion {
+	text-align: justify;
+}
+
+input[type="date"] {
+	text-align: center;
+}
+</style>
+
+</head>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<body>
+
+	<div class="container mt-5">
+		<!-- Título -->
+		<h3 th:text="'Monterrico Polo Aparts - ' + ${inmueble.nombre}"
+			class="mb-3"></h3>
+
+		<div class="row">
+			<!-- Imagen principal -->
+			<div class="col-md-8">
+				<img th:src="${inmueble.imagenHabitacion}" alt="Imagen del inmueble"
+					class="inmueble-img mb-4">
+			</div>
+
+			<!-- Precio y reservas -->
+			<div class="col-md-4">
+				<div class="precio-box">
+					<h6>Desde</h6>
+					<h4>
+						S/. <span id="precioPorNoche"
+							th:text="${#numbers.formatDecimal(inmueble.precioPorNoche, 1, 2)}">230</span>
+					</h4>
+					<p class="text-muted">Por noche</p>
+
+					<div class="mb-2">
+						<label>Entrada</label> <input type="text" id="entrada"
+							class="form-control mb-2" onchange="calcularTotal()"> <label>Salida</label>
+						<input type="text" id="salida" class="form-control mb-3"
+							onchange="calcularTotal()">
+					</div>
+
+					<p>
+						<strong>Total:</strong> S/. <span id="precioTotal">0.00</span>
+					</p>
+					<form th:action="@{/pago/crear-checkout-session}" method="POST" id="formPago">
+
+
+  <input type="hidden" name="fechaInicio" id="fechaInicioInput">
+  <input type="hidden" name="fechaFin" id="fechaFinInput">
+  <input type="hidden" name="total" id="totalInput">
+  <input type="hidden" name="inmuebleId" th:value="${inmueble.id}">
+  <button type="submit" class="btn btn-success w-100" id="btnPagar">Pagar con tarjeta</button>
+
+</form>
+
+				</div>
+			</div>
+		</div>
+
+		<hr class="my-4" />
+
+		<!-- Información detallada -->
+		<div class="row">
+			<div class="col-md-6">
+				<p class="info-item">
+					<strong>Capacidad:</strong> <span th:text="${inmueble.capacidad}"></span>
+					personas
+				</p>
+				<p class="info-item">
+					<strong>Habitaciones:</strong> <span
+						th:text="${inmueble.numeroHabitaciones}"></span>
+				</p>
+				<p class="info-item">
+					<strong>Servicios incluidos:</strong> <span
+						th:text="${inmueble.serviciosIncluidos}"></span>
+				</p>
+			</div>
+			<div class="col-md-6">
+				<p class="info-item">
+					<strong>Tamaño estimado:</strong> 45 m²
+				</p>
+				<p class="info-item">
+					<strong>Disponibilidad:</strong> <span
+						th:text="${inmueble.disponibilidad}"
+						th:classappend="${inmueble.disponibilidad == 'Si'} ? 'text-success' : 'text-danger'">
+					</span>
+				</p>
+			</div>
+		</div>
+
+		<hr class="my-4" />
+
+		<a href="javascript:void(0);" class="btn btn-outline-secondary"
+			th:onclick="|confirmarRegreso('/cliente/catalogo/verInmueble')|">
+			← Volver al Catálogo </a>
+	</div>
+
+	<!-- Script para calcular total -->
+	<script th:inline="javascript">
+document.addEventListener("DOMContentLoaded", function () {
+    const idInmueble = /*[[${inmueble.id}]]*/ 0;
+    let salidaPicker; // Declarar antes de usar
+
+    fetch(`/cliente/ocupadas/${idInmueble}`)
+        .then(response => response.json())
+        .then(fechasOcupadas => {
+            salidaPicker = flatpickr("#salida", {
+                minDate: "today",
+                dateFormat: "Y-m-d",
+                disable: fechasOcupadas,
+                onChange: function () {
+                    calcularTotal();
+                }
+            });
+
+            flatpickr("#entrada", {
+                minDate: "today",
+                dateFormat: "Y-m-d",
+                disable: fechasOcupadas,
+                onChange: function (selectedDates, dateStr) {
+                    if (salidaPicker) {
+                        salidaPicker.set("minDate", dateStr);
+                    }
+                    calcularTotal();
+                }
+            });
+        })
+        .catch(error => {
+            console.error("Error cargando fechas ocupadas:", error);
+        });
+});
+
+    function calcularTotal() {
+        const entradaStr = document.getElementById('entrada').value;
+        const salidaStr = document.getElementById('salida').value;
+        const precio = parseFloat(document.getElementById('precioPorNoche').textContent);
+
+        if (entradaStr && salidaStr) {
+            const entrada = new Date(entradaStr);
+            const salida = new Date(salidaStr);
+
+            if (salida > entrada) {
+                const diferencia = (salida - entrada) / (1000 * 60 * 60 * 24);
+                const total = diferencia * precio;
+                document.getElementById('precioTotal').textContent = total.toFixed(2);
+            } else {
+                document.getElementById('precioTotal').textContent = '0.00';
+            }
+        }
+    }
+    
+    function validarFechasYTotal() {
+        const entrada = document.getElementById('entrada').value;
+        const salida = document.getElementById('salida').value;
+        const total = document.getElementById('precioTotal').textContent;
+
+        if (!entrada || !salida || total === '0.00') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Fechas inválidas',
+                text: 'Por favor selecciona fechas válidas para continuar con el pago.'
+            });
+            return false;
+        }
+
+        document.getElementById('fechaInicioInput').value = entrada;
+        document.getElementById('fechaFinInput').value = salida;
+        document.getElementById('totalInput').value = total;
+
+        return true; // permite el submit si todo está bien
+    }
+
+
+    function confirmarRegreso(url) {
+        Swal.fire({
+            title: '¿Deseas volver al catálogo?',
+            text: "Perderás los datos no guardados.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#aaa',
+            confirmButtonText: 'Sí, volver',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+    
+    
+    document.getElementById("formPago").addEventListener("submit", function (e) {
+        e.preventDefault(); 
+        const esValido = validarFechasYTotal();
+        if (esValido) {
+            const btn = document.getElementById("btnPagar");
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Procesando...'; // opcional
+            this.submit(); 
+        }
+    });
+
+
+</script>
+
+</body>
+</html>

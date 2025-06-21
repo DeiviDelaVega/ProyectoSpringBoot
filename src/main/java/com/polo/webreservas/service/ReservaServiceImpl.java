@@ -2,13 +2,14 @@ package com.polo.webreservas.service;
 
 import com.polo.webreservas.model.Reserva;
 import com.polo.webreservas.repository.ReservaRepository;
-import com.polo.webreservas.service.ReservaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -51,4 +52,31 @@ public class ReservaServiceImpl implements ReservaService {
     public void eliminar(Long id) {
         reservaRepository.deleteById(id);
     }
+
+	@Override
+	public List<LocalDate> obtenerFechasOcupadas(Long id) {
+		 List<Reserva> reservas = reservaRepository.findByInmuebleId(id);
+		 List<LocalDate> fechasOcupadas = new ArrayList<>();
+
+		    for (Reserva reserva : reservas) {
+		        LocalDate inicio = reserva.getFechaInicio();
+		        LocalDate fin = reserva.getFechaFin();
+		        while (!inicio.isAfter(fin)) {
+		            fechasOcupadas.add(inicio);
+		            inicio = inicio.plusDays(1);
+		        }
+		    }
+
+		    return fechasOcupadas;
+	}
+
+	@Override
+	public Reserva guardar(Reserva reserva) {
+		return reservaRepository.save(reserva);
+	}
+
+
+
+
+
 }

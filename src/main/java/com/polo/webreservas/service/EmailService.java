@@ -2,7 +2,11 @@ package com.polo.webreservas.service;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class EmailService {
@@ -14,13 +18,16 @@ public class EmailService {
 		this.emailSender = emailSender;
 	}
 	
-	public void sendEmail(String to, String subject, String content) {
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setTo(to);
-		message.setSubject(subject);
-		message.setText(content);
-		message.setFrom("villdarkk@gmail.com");
-		emailSender.send(message);
-	}
+	public void sendHtmlEmail(String to, String subject, String htmlContent) throws MessagingException {
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
+        
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(htmlContent, true);
+        helper.setFrom("villdarkk@gmail.com");
+        
+        emailSender.send(message);
+    }
   
 }

@@ -119,7 +119,7 @@
 								<h5 class="text-primary"
 									th:text="'S/ ' + ${#numbers.formatDecimal(inmueble.precioPorNoche, 1, 2)}">Precio
 								</h5>
-								<button class="btn btn-dark">Ver</button>
+								<a th:href="@{/cliente/catalogo/detalle/{id}(id=${inmueble.id})}" class="btn btn-dark">Ver</a>
 							</div>
 						</div>
 					</div>
