@@ -2,6 +2,7 @@ package com.polo.webreservas.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,8 +38,9 @@ public class Reserva {
     @Column(name = "Fecha_Solicitud", nullable = false)
     private LocalDateTime fechaSolicitud = LocalDateTime.now();
 
+
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_Cliente")
     private Cliente cliente;
 

@@ -17,4 +17,7 @@ public interface ReservaService {
     void eliminar(Long id);
     public List<LocalDate> obtenerFechasOcupadas(Long id);
     public Reserva guardar(Reserva reserva);
+    Page<Reserva> listarReservasPorCliente(String correo, Pageable pageable);
+    List<Object[]> obtenerInmueblesMasReservados();
+
 }
