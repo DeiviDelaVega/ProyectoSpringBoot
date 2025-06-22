@@ -114,3 +114,84 @@ footer {
 		font-size: 1.1rem;
 	}
 }
+
+.footer-custom {
+  background-color: #111;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+  padding-top: 3rem;
+  padding-bottom: 2rem;
+}
+
+.footer-custom h4 {
+  font-size: 2rem; 
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.footer-custom h4 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  position: relative;
+}
+
+.footer-custom hr {
+  border-top: 3px solid #9575cd; 
+  width: 300px;
+  margin: 0 0 1.5rem 0; 
+}
+
+.hr-centered {
+  display: inline-block;
+  border: none;
+  border-top: 4px solid #9575cd; 
+  width: 80px;
+  margin-top: 0.3rem;
+  margin-bottom: 1.5rem;
+}
+
+.footer-custom a {
+  font-size: 1.4rem; 
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-custom a:hover {
+  color: #9575cd;
+}
+
+.footer-custom .icon {
+  font-size: 1.5rem; 
+  margin-right: 0.6rem;
+}
+
+.footer-custom p {
+  font-size: 1.4rem; 
+  color: #ccc;
+  line-height: 1.8;
+}
+
+.footer-bottom {
+  background-color: #1a1a1a;
+  color: #aaa;
+  font-size: 1.3rem; 
+  text-align: center;
+  padding: 1rem 0;
+  border-top: 1px solid #333;
+}
+
+@media (max-width: 576px) {
+  .footer-custom {
+    height: 5rem;
+  }
+
+  .footer-custom hr {
+    margin: 0 auto 1.5rem;
+  }
+
+  .footer-custom .row > div {
+    margin-bottom: 2rem;
+  }
+}

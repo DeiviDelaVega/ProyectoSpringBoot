@@ -115,4 +115,9 @@ public class InmuebleServiceImpl implements InmuebleService {
 
 	    return repositorio.findAll(spec, pageable);
 	}
+
+	@Override
+	public void actualizarUbicacion(Double lat, Double lng, int idInmueble) {
+		repositorio.actualizarUbicacion(lat, lng, idInmueble);
+	}
 }
