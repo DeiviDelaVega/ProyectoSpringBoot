@@ -87,6 +87,7 @@ public class ClienteController {
             existente.setDireccion(cliente.getDireccion());
             existente.setNumeroTelf(cliente.getNumeroTelf());
             existente.setCorreo(cliente.getCorreo());
+            existente.setEstado(cliente.getEstado());
 
             servicio.actualizarCliente(existente);
             redirectAttributes.addFlashAttribute("actualizado", true);
