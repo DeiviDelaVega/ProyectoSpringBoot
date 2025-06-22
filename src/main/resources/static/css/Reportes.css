@@ -1,0 +1,20 @@
+
+/* Estilo para desplegar el dropdown con hover */
+.custom-hover-dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+    border-radius: 0 0 6px 6px;
+}
+
+.custom-hover-dropdown .dropdown-menu {
+    display: none;
+    position: absolute;
+	background-color: #212529;
+    min-width: 200px;
+    z-index: 1000;
+}
+
+.dropdown-menu .dropdown-item {
+    white-space: nowrap;
+	color: white;
+}

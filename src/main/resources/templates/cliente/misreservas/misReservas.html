@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Reservas - Cliente</title>
+    <link rel="stylesheet" th:href="@{/css/MisReservas.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav th:replace="cliente/HeaderNavCliente :: nav"></nav>
+
+<div class="container pt-3">
+    <h5 class="text-center mb-3">🗓️ Mis Reservas Pagadas</h5>
+
+    <div th:if="${reservas.totalElements == 0}" class="alert alert-info text-center p-2 small">
+        No tienes reservas registradas.
+    </div>
+
+    <div th:each="reserva : ${reservas.content}" th:if="${reserva != null and reserva.inmueble != null}" class="card mb-2 shadow-sm reserva-card">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img th:src="${reserva.inmueble.imagenHabitacion}" class="img-fluid rounded-start" alt="Imagen del inmueble">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body d-flex flex-column justify-content-between h-100 p-2">
+                    <div>
+						<!-- 👇 Campo: Nombre del inmueble -->
+						<h5 class="card-title text-center mb-2">
+						    <strong th:id="'nombre-' + ${reserva.id}" th:text="${reserva.inmueble.nombre}">Nombre Inmueble</strong>
+						</h5>
+
+						<!-- 👇 Descripción y servicios -->
+						<div class="d-flex justify-content-between mb-1">
+						    <p class="mb-0">
+						        <strong>Descripción:</strong>
+						        <span th:id="'descripcion-' + ${reserva.id}" th:text="${reserva.inmueble.descripcion}"></span>
+						    </p>
+						    <p class="mb-0">
+						        <strong>Servicios:</strong>
+						        <span th:id="'servicios-' + ${reserva.id}" th:text="${reserva.inmueble.serviciosIncluidos}"></span>
+						    </p>
+						</div>
+
+						<!-- 👇 Fechas -->
+						<div class="d-flex justify-content-between mb-1">
+						    <p class="mb-0">
+						        <strong>Desde:</strong>
+						        <span th:id="'inicio-' + ${reserva.id}" th:text="${#temporals.format(reserva.fechaInicio, 'dd/MM/yyyy')}"></span><br>
+						        <strong>Hasta:</strong>
+						        <span th:id="'fin-' + ${reserva.id}" th:text="${#temporals.format(reserva.fechaFin, 'dd/MM/yyyy')}"></span>
+						    </p>
+						    <p class="mb-0">
+						        <strong>Total:</strong>
+						        S/. <span th:id="'total-' + ${reserva.id}" th:text="${#numbers.formatDecimal(reserva.montoTotal, 1, 2)}"></span>
+						    </p>
+						</div>
+						<div class="d-flex justify-content-between align-items-center mt-2 px-1">
+							<span th:id="'estado-' + ${reserva.id}" class="badge bg-success estado-texto" th:text="${reserva.estadoReserva}">Aprobado</span>
+							
+							<button class="btn btn-primary btn-sm"
+							       th:onclick="'generarPDF(' + ${reserva.id} + ')'">
+							       <i class="fas fa-file-pdf"></i> Descargar PDF
+							   </button>
+							   
+							   <button 
+							       th:id="'btnReembolso-' + ${reserva.id}"
+							       class="btn btn-danger btn-sm btn-reembolso"
+							       th:onclick="|confirmarReembolso('/cliente/misreservas/reembolso/${reserva.id}')|"
+							       data-bs-toggle="tooltip"
+							       data-bs-placement="top"
+							       title="Reembolsar solo estará disponible durante 1 minuto">
+							       <i class="fas fa-undo-alt"></i> Reembolsar
+							   </button>
+							
+						    <a th:href="@{/cliente/catalogo/detalle/{id}(id=${reserva.inmueble.id})}" 
+						       class="btn btn-dark btn-sm btn-ver">
+						       <i class="fas fa-eye"></i> Ver
+						    </a>
+							<!-- Datos ocultos para usar en el PDF -->
+							<span th:if="${reserva.cliente != null}" 
+							      th:id="'nombreCliente-' + ${reserva.id}" 
+							      th:text="${reserva.cliente.nombre}" 
+							      style="display: none;">
+							 </span>
+							 <span th:id="'fechaSolicitud-' + ${reserva.id}" 
+							       th:text="${reserva.fechaSolicitud}" 
+							       style="display: none;">
+							 </span>
+
+						</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmarReembolso(url) {
+        Swal.fire({
+            title: '¿Estás seguro de reembolsar?',
+            text: "Recibirá su dinero en 5 días hábiles",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, reembolsar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+</script>
+<div th:if="${eliminado}">
+    <script>
+        Swal.fire({
+            title: '¡Reserva cancelada!',
+            text: 'La reserva se ha eliminado correctamente',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+        });
+    </script>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const now = new Date();
+
+    document.querySelectorAll('[id^="fechaSolicitud-"]').forEach(span => {
+      const reservaId = span.id.split('-')[1];
+      const fechaTexto = span.innerText;
+
+      const fechaReserva = new Date(fechaTexto);
+      const diffMilis = now - fechaReserva;
+      const diffMinutos = diffMilis / 1000 / 60;
+
+      if (diffMinutos > 1) {
+        const btn = document.querySelector(`#btnReembolso-${reservaId}`);
+        if (btn) btn.style.display = 'none';
+      }
+    });
+
+    // Tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+      new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+  });
+</script>
+
+<!-- 👇 Agrega justo antes de cerrar </body> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+    async function generarPDF(reservaId) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const margin = 30;
+        let y = margin;
+
+        // Datos desde el DOM
+        const nombre = document.getElementById('nombre-' + reservaId)?.innerText || '';
+        const descripcion = document.getElementById('descripcion-' + reservaId)?.innerText || '';
+        const servicios = document.getElementById('servicios-' + reservaId)?.innerText || '';
+        const fechaInicio = document.getElementById('inicio-' + reservaId)?.innerText || '';
+        const fechaFin = document.getElementById('fin-' + reservaId)?.innerText || '';
+        const total = document.getElementById('total-' + reservaId)?.innerText || '';
+        const estado = document.getElementById('estado-' + reservaId)?.innerText || '';
+        const nombreCliente = document.getElementById('nombreCliente-' + reservaId)?.innerText || 'Invitado';
+
+		
+	
+        // 🔷 Bloque azul superior
+        doc.setFillColor(41, 128, 185);
+        doc.rect(0, 0, 210, 10, 'F');
+
+        y += 15;
+        doc.setFontSize(12);
+
+        // 🏢 Información de empresa
+        doc.setFont(undefined, 'bold');
+        doc.text('Nombre de la empresa:', margin, y);
+        doc.setFont(undefined, 'normal');
+        doc.text('Polo Web Reservas', margin + 90, y); y += 7;
+
+        doc.setFont(undefined, 'bold');
+        doc.text('Dirección:', margin, y);
+        doc.setFont(undefined, 'normal');
+        doc.text('Izaguirre, Lima - Perú', margin + 90, y); y += 27;
+
+        // 👤 Cliente e Inmueble
+        doc.setFont(undefined, 'bold');
+        doc.text('Cliente:', margin, y);
+        doc.setFont(undefined, 'normal');
+        doc.text(nombreCliente, margin + 90, y); y += 7;
+
+        doc.setFont(undefined, 'bold');
+        doc.text('Inmueble:', margin, y);
+        doc.setFont(undefined, 'normal');
+        doc.text(nombre, margin + 90, y); y += 10;
+
+		doc.setFont(undefined, 'bold');
+		doc.text('ID de Solicitud:', margin, y);
+		doc.setFont(undefined, 'normal');
+		doc.text(reservaId.toString(), margin + 90, y); y += 7;
+
+		
+        // 📝 Descripción
+        doc.setFont(undefined, 'bold');
+        doc.text('Descripción:', margin, y);
+        doc.setFont(undefined, 'normal');
+        doc.text(doc.splitTextToSize(descripcion, 150), margin + 90, y); y += 10;
+
+        // 🧺 Servicios
+        doc.setFont(undefined, 'bold');
+        doc.text('Servicios incluidos:', margin, y);
+        doc.setFont(undefined, 'normal');
+        doc.text(doc.splitTextToSize(servicios, 150), margin + 90, y); y += 10;
+
+        // 📅 Fechas
+        doc.setFont(undefined, 'bold');
+        doc.text('Fecha de inicio:', margin, y);
+        doc.setFont(undefined, 'normal');
+        doc.text(fechaInicio, margin + 90, y); y += 7;
+
+        doc.setFont(undefined, 'bold');
+        doc.text('Fecha de fin:', margin, y);
+        doc.setFont(undefined, 'normal');
+        doc.text(fechaFin, margin + 90, y); y += 10;
+
+        // 🔻 Línea separadora
+        doc.line(margin, y, 210 - margin, y); y += 10;
+
+        // 💰 Monto Total
+        doc.setFontSize(16);
+        doc.setFont(undefined, 'bold');
+        doc.text('Monto Total: S/. ' + total, margin, y); y += 10;
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'normal');
+
+        doc.line(margin, y, 210 - margin, y); y += 10;
+
+        // 💳 Pago y estado
+        doc.setFont(undefined, 'bold');
+        doc.text('Método de pago:', margin, y);
+        doc.setFont(undefined, 'normal');
+        doc.text('Tarjeta', margin + 35, y); y += 7;
+
+        doc.setFont(undefined, 'bold');
+        doc.text('Estado de reserva:', margin, y);
+        doc.setFont(undefined, 'normal');
+        doc.text(estado, margin + 42, y); y += 10;
+		
+
+        // 🔷 Bloque azul inferior
+        doc.setFillColor(41, 128, 185);
+        doc.rect(0, 287, 210, 10, 'F');
+
+        // 💾 Descargar
+        doc.save(`reserva-${reservaId}.pdf`);
+    }
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

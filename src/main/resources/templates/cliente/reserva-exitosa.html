@@ -13,15 +13,19 @@
         <a href="/cliente/home" class="btn btn-primary mt-3">Volver al inicio</a>
     </div>
 
-    <script>
-        function mostrarMensaje() {
-            Swal.fire({
-                icon: 'success',
-                title: '¡Reserva Exitosa!',
-                text: 'Tu reserva fue procesada correctamente.',
-                confirmButtonText: 'Aceptar'
-            });
-        }
-    </script>
+<script>	
+	function mostrarMensaje() {
+	    Swal.fire({
+	        icon: 'success',
+	        title: '¡Reserva Exitosa!',
+	        text: 'Tu reserva fue procesada correctamente.',
+	        confirmButtonText: 'Aceptar'
+	    }).then((result) => {
+	        if (result.isConfirmed) {
+	            generarPDF();
+	        }
+	    });
+	}
+</script>
 </body>
 </html>
