@@ -18,6 +18,10 @@ import com.polo.webreservas.model.Reserva;
 import com.polo.webreservas.service.ReservaService;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -31,7 +35,7 @@ public class MisReservasController {
     @GetMapping("/reembolso/{id}")
     public String procesarReembolso(@PathVariable Long id) {
         reservaService.eliminar(id); // Elimina directamente de la base de datos
-        return "redirect:/cliente/misreservas/misReservas?eliminado=true";
+        return "redirect:/cliente/misreservas/misReservas";
     }
     
     @GetMapping("/misReservas")
@@ -45,11 +49,28 @@ public class MisReservasController {
         Page<Reserva> reservas = reservaService.listarReservasPorCliente(correoCliente, pageable);
 
         model.addAttribute("reservas", reservas);
-        model.addAttribute("page", reservas);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", reservas.getTotalPages());
 
-        // 🔴 Aquí pasamos el valor al modelo si existe
+        List<Map<String, Object>> paginas = new ArrayList<>();
+        int totalPaginas = reservas.getTotalPages();
+        for (int i = 1; i <= totalPaginas; i++) {
+            Map<String, Object> pagina = new HashMap<>();
+            pagina.put("numero", i);
+            pagina.put("actual", (i == page + 1)); 
+            paginas.add(pagina);
+        }
+
+        Map<String, Object> pageWrapper = new HashMap<>();
+        pageWrapper.put("hasPrevius", reservas.hasPrevious()); 
+        pageWrapper.put("hasNext", reservas.hasNext());
+        pageWrapper.put("paginaActual", reservas.getNumber() + 1); 
+        pageWrapper.put("totalPaginas", reservas.getTotalPages());
+        pageWrapper.put("first", reservas.isFirst());
+        pageWrapper.put("last", reservas.isLast());
+        pageWrapper.put("url", "");
+        pageWrapper.put("paginas", paginas); 
+
+        model.addAttribute("page", pageWrapper);
+
         if (eliminado != null && eliminado) {
             model.addAttribute("eliminado", true);
         }
@@ -57,13 +78,16 @@ public class MisReservasController {
         return "cliente/misreservas/misReservas";
     }
 
+
+
+
     @GetMapping("/reserva-exitosa/{id}")
     public String mostrarReservaExitosa(@PathVariable Long id, Model model) {
         Optional<Reserva> reservaOpt = reservaService.obtenerPorId(id);
         if (reservaOpt.isPresent()) {
             Reserva reserva = reservaOpt.get();
 
-            // 🔍 VERIFICACIÓN: log para confirmar que el cliente existe
+           
             if (reserva.getCliente() == null) {
                 System.out.println("⚠️ La reserva NO tiene cliente asociado");
             }
