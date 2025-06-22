@@ -15,7 +15,6 @@ public class Inmueble {
     @Column(name = "ID_Inmueble")
     private int id;
 
-    @NotNull
     @NotBlank(message = "El nombre no puede estar vacío")
     @Size(max = 100, message = "El nombre no debe exceder los 100 caracteres")
     @Column(name = "Nombre", nullable = false, length = 100)
@@ -51,7 +50,6 @@ public class Inmueble {
     @Column(name = "Precio_Por_Noche", precision = 10, scale = 2, nullable = false)
     private BigDecimal precioPorNoche;
 
-    @NotNull(message = "La imagen de la habitacion no puede estar vacia")
     @Size(max = 300, message = "La imagen de la habitacion no debe exceder los 300 caracteres")
     @Column(name = "Imagen_Habitacion", length = 300, nullable = false)
     private String imagenHabitacion;
@@ -61,11 +59,26 @@ public class Inmueble {
     @JoinColumn(name = "ID_Administrador")
     private Administrador administrador;
     
-	public Inmueble(@NotNull @Size(max = 100) String nombre, @NotNull @Positive int capacidad,
-			@NotNull @Positive int numeroHabitaciones, @Size(max = 300) String descripcion,
-			@Size(max = 200) String serviciosIncluidos, String disponibilidad, @Positive BigDecimal precioPorNoche,
-			@Size(max = 300) String imagenHabitacion,
-			@NotNull(message = "Debe seleccionar un administrador") Administrador administrador) {
+    @NotNull(message = "Debe seleccionar una ubicación")
+    @Column(name = "Latitud", precision = 10, scale = 8)
+    private BigDecimal latitud;
+
+    @NotNull(message = "Debe seleccionar una ubicación")
+    @Column(name = "Longitud", precision = 11, scale = 8)
+    private BigDecimal longitud;
+	
+	public Inmueble(
+			@NotBlank(message = "El nombre no puede estar vacío") @Size(max = 100, message = "El nombre no debe exceder los 100 caracteres") String nombre,
+			@NotNull(message = "La capacidad no puede estar vacio") @Positive(message = "La capacidad debe ser un número positivo") int capacidad,
+			@NotNull(message = "El numero de habitaciones no puede estar vacio") @Positive(message = "El numero de habitaciones debe ser un número positivo") int numeroHabitaciones,
+			@NotNull @NotBlank(message = "La descripcion no puede estar vacio") @Size(max = 300, message = "La descripcion no debe exceder los 300 caracteres") String descripcion,
+			@NotNull @NotBlank(message = "Los servicios incluidos no pueden estar vacios") @Size(max = 200, message = "Los servicios incluidos no deben exceder los 200 caracteres") String serviciosIncluidos,
+			String disponibilidad,
+			@NotNull(message = "El precio por noche no puede estar vacio") @Positive(message = "El precio por noche debe ser un número positivo") BigDecimal precioPorNoche,
+			@NotNull(message = "La imagen de la habitacion no puede estar vacia") @Size(max = 300, message = "La imagen de la habitacion no debe exceder los 300 caracteres") String imagenHabitacion,
+			@NotNull(message = "Debe seleccionar un administrador") Administrador administrador,
+			@NotNull(message = "Debe seleccionar una ubicación") BigDecimal latitud,
+			@NotNull(message = "Debe seleccionar una ubicación") BigDecimal longitud) {
 		this.nombre = nombre;
 		this.capacidad = capacidad;
 		this.numeroHabitaciones = numeroHabitaciones;
@@ -75,8 +88,10 @@ public class Inmueble {
 		this.precioPorNoche = precioPorNoche;
 		this.imagenHabitacion = imagenHabitacion;
 		this.administrador = administrador;
+		this.latitud = latitud;
+		this.longitud = longitud;
 	}
-	
+
 	public Inmueble() {
 		
 	}
@@ -151,6 +166,22 @@ public class Inmueble {
 
 	public void setImagenHabitacion(String imagenHabitacion) {
 		this.imagenHabitacion = imagenHabitacion;
+	}
+	
+    public BigDecimal getLatitud() {
+		return latitud;
+	}
+
+	public void setLatitud(BigDecimal latitud) {
+		this.latitud = latitud;
+	}
+
+	public BigDecimal getLongitud() {
+		return longitud;
+	}
+
+	public void setLongitud(BigDecimal longitud) {
+		this.longitud = longitud;
 	}
 
 	public Administrador getAdministrador() {

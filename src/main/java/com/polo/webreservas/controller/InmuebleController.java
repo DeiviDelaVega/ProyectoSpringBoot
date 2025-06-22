@@ -86,11 +86,16 @@ public class InmuebleController {
 	        .anyMatch(error -> !error.getField().equals("imagenHabitacion"));
 
 	    if (inmueble.getId() == 0 && (file == null || file.isEmpty())) {
-	        model.addAttribute("error", "Debe seleccionar una imagen.");
+	        model.addAttribute("error", "Debe seleccionar una imagen");
 	        return "admin/inmueble/CrearInmueble";
 	    }
 	    
 	    if (tieneErrores) {
+	        return "admin/inmueble/CrearInmueble";
+	    }
+	    
+	    if (inmueble.getLatitud() == null || inmueble.getLongitud() == null) {
+	        model.addAttribute("error", "Debe seleccionar una ubicación en el mapa");
 	        return "admin/inmueble/CrearInmueble";
 	    }
 	    
@@ -138,7 +143,7 @@ public class InmuebleController {
 	                         @RequestParam(value = "file", required = false) MultipartFile file,
 	                         Model model,
 	                         RedirectAttributes redirectAttributes) {
-	    try {
+		try {
 	        Inmueble inmuebleExistente = inmuService.obtenerPorId(id);
 	        inmuebleExistente.setId(id);
 	        inmuebleExistente.setNombre(inmueble.getNombre());
@@ -157,6 +162,8 @@ public class InmuebleController {
 	            inmuebleExistente.setImagenHabitacion(url);
 	        }
 
+	        inmuebleExistente.setLatitud(inmueble.getLatitud());
+	        inmuebleExistente.setLongitud(inmueble.getLongitud());
 	        inmuebleExistente.setAdministrador(inmueble.getAdministrador());
 
 	        inmuService.actualizar(inmuebleExistente);
@@ -164,7 +171,6 @@ public class InmuebleController {
 	    } catch (Exception e) {
 	        redirectAttributes.addFlashAttribute("actualizado", false);
 	    }
-
 	    return "redirect:/admin/inmueble/inmuebles";
 	}
 
@@ -178,7 +184,6 @@ public class InmuebleController {
 	        
 	        inmuService.eliminar(id);
 	        
-	        // Agrega mensaje flash para SweetAlert
 	        redirectAttributes.addFlashAttribute("eliminado", true);
 	    }
 	    return "redirect:/admin/inmueble/inmuebles";

@@ -163,6 +163,19 @@
 							    <p th:text="${error}"></p>
 							</div>
 						</div>
+						
+						<br>
+						<div class="form-group text-center">
+						    <label><strong>Ubicación en el mapa</strong></label>
+						    <div class="map-wrapper">
+						    	<div id="map"></div>
+						    </div>
+						    <input type="hidden" th:field="*{latitud}" id="latitud" />
+						    <input type="hidden" th:field="*{longitud}" id="longitud" />
+						    <div th:if="${#fields.hasErrors('latitud') or #fields.hasErrors('longitud')}" class="invalid-feedback d-block text-danger">
+						        <p>Debe seleccionar una ubicación en el mapa</p>
+						    </div>
+						</div>
 
 						<div class="button-group-container">
 							<button type="button" class="btn btn-dark"
@@ -206,6 +219,20 @@
 						</script>
 						
 						<script>
+						    function validarUbicacion() {
+						        const latitud = document.getElementById("latitud").value;
+						        const longitud = document.getElementById("longitud").value;
+						
+						        if (!latitud || !longitud) {
+						            alert("Selecciona una ubicación en el mapa");
+						            return false;
+						        }
+						
+						        return true;
+						    }
+						</script>
+						
+						<script>
 							function confirmarRegistro() {
 							    Swal.fire({
 							        title: '¿Estás seguro de registrar este inmueble?',
@@ -228,5 +255,36 @@
 			</div>
 		</div>
 	</div>
+	
+	<script>
+	    let marker;
+	    function initMap() {
+	        const centroInicial = { lat: -12.0464, lng: -77.0428 };
+	        const map = new google.maps.Map(document.getElementById("map"), {
+	            zoom: 12,
+	            center: centroInicial,
+	        });
+	
+	        map.addListener("click", (e) => {
+	            colocarMarcador(e.latLng, map);
+	        });
+	    }
+	
+	    function colocarMarcador(latLng, map) {
+	        if (marker) {
+	            marker.setPosition(latLng);
+	        } else {
+	            marker = new google.maps.Marker({
+	                position: latLng,
+	                map: map,
+	            });
+	        }
+	
+	        document.getElementById("latitud").value = latLng.lat();
+	        document.getElementById("longitud").value = latLng.lng();
+	    }
+	</script>
+	
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc1pV5K0s9Z7xGUUU03n6zBhKemKLiRx8&callback=initMap" async defer></script>	
 </body>
 </html>

@@ -63,9 +63,49 @@
 		         style="max-height:400px; border-radius:10px;" />
 		</div>
 		
+ 		<br><br>
+		<div th:if="${inmueble.latitud != null and inmueble.longitud != null}" class="col-md-12 text-center">
+		    <label class="control-label">Ubicación en el Mapa</label><br />
+		    <div class="map-wrapper">
+		    	<div id="map"></div>
+		    </div>
+			
+			<!-- Los /*[[ ... ]]*/ no son comentarios normales de JavaScript, sino una sintaxis especial de Thymeleaf cuando estás trabajando con th:inline="javascript" -->
+		    <script th:inline="javascript">
+		        /*<![CDATA[*/
+		        const lat = /*[[${inmueble.latitud}]]*/ 0;
+		        const lng = /*[[${inmueble.longitud}]]*/ 0;
+		        const nombre = /*[['' + ${inmueble.nombre}]]*/ 'Inmueble';
+		
+		        function initMap() {
+		            const ubicacion = { lat: lat, lng: lng };
+		            const map = new google.maps.Map(document.getElementById("map"), {
+		                zoom: 15,
+		                center: ubicacion
+		            });
+		
+		            new google.maps.Marker({
+		                position: ubicacion,
+		                map: map,
+		                title: nombre
+		            });
+		        }
+		        /*]]>*/
+		    </script>
+		
+		    <script async defer
+		        th:src="@{'https://maps.googleapis.com/maps/api/js?key=AIzaSyCc1pV5K0s9Z7xGUUU03n6zBhKemKLiRx8&callback=initMap'}">
+		    </script>
+		</div>
+		<div th:if="${inmueble.latitud == null or inmueble.longitud == null}">
+		    <p><em>Este inmueble no tiene ubicación registrada</em></p>
+		</div>
+		
+		<br>
 		<div class="button-group-container mt-4">
 			<a class="btn btn-secondary" th:href="@{/admin/inmueble/inmuebles}">Volver</a>
 		</div>
     </div>
+
 </body>
 </html>

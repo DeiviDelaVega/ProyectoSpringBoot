@@ -114,6 +114,24 @@ body {
     color: #000000;
 }
 
+.map-wrapper {
+    width: 89%;
+    max-width: 1000px;        
+    height: 400px;
+    margin: 20px auto;       
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid #ccc;
+    background: #f9f9f9;
+    position: relative;
+}
+
+#map {
+    height: 400px;
+    width: 100%;
+}
+
 h2.text-center, h4 {
     text-align: center;
     color: #000;
