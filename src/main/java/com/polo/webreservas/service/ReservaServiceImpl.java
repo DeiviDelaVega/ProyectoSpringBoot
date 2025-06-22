@@ -38,20 +38,13 @@ public class ReservaServiceImpl implements ReservaService {
         return reservaRepository.findById(id);
     }
 
-    @Override
-    public void actualizarEstado(Long id, String nuevoEstado) {
-        Optional<Reserva> opt = reservaRepository.findById(id);
-        if (opt.isPresent()) {
-            Reserva reserva = opt.get();
-            reserva.setEstadoReserva(nuevoEstado);
-            reservaRepository.save(reserva);
-        }
-    }
+ 
 
     @Override
     public void eliminar(Long id) {
         reservaRepository.deleteById(id);
     }
+
 
 	@Override
 	public List<LocalDate> obtenerFechasOcupadas(Long id) {
@@ -76,7 +69,30 @@ public class ReservaServiceImpl implements ReservaService {
 	}
 
 
+	@Override
+	public Page<Reserva> listarReservasPorCliente(String correo, Pageable pageable) {
+	    return reservaRepository.findByCorreoCliente(correo, pageable);
+	}
+	
 
 
+	@Override
+	public void actualizarEstado(Long id, String nuevoEstado) {
+	    Optional<Reserva> opt = reservaRepository.findById(id);
+	    if (opt.isPresent()) {
+	        Reserva reserva = opt.get();
+	        reserva.setEstadoReserva(nuevoEstado);
+	        reservaRepository.save(reserva);
+	    }
+	}
+
+
+	
+	@Override
+	public List<Object[]> obtenerInmueblesMasReservados() {
+	    return reservaRepository.contarReservasPorInmueble();
+	}
+
+	
 
 }
