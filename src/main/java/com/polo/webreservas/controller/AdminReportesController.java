@@ -1,13 +1,12 @@
 package com.polo.webreservas.controller;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import com.polo.webreservas.service.ClienteService;
 import com.polo.webreservas.service.ReservaService;
 
 @Controller
@@ -16,11 +15,21 @@ public class AdminReportesController {
 
     @Autowired
     private ReservaService reservaService;
+    
+    @Autowired
+    private ClienteService clienteService;
 
     @GetMapping("/InmueblesMasReservados")
     public String verInmueblesMasReservados(Model model) {
         List<Object[]> datos = reservaService.obtenerInmueblesMasReservados();
         model.addAttribute("datosInmuebles", datos);
         return "admin/reportes/InmueblesMasReservados";
+    }
+    
+    @GetMapping("/ClientesMasReservas")
+    public String verClientesMasReservas(Model model) {
+        List<Object[]> datos = clienteService.obtenerClientesMasReservas();
+        model.addAttribute("datosClientes", datos);
+        return "admin/reportes/ClientesMasReservas";
     }
 }

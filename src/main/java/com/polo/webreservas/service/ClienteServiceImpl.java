@@ -90,4 +90,9 @@ public class ClienteServiceImpl implements ClienteService {
 		}
 		return clienteRepository.filtrarPorApellidoONroDocumento(filtro.trim(), pageable);
 	}
+
+	@Override
+	public List<Object[]> obtenerClientesMasReservas() {
+		return clienteRepository.contarReservasPorCliente();
+	}
 }
