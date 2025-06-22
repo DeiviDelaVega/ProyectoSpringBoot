@@ -1,47 +1,52 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
 <title>Nosotros</title>
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
 	crossorigin="anonymous">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+	rel="stylesheet">
 <link rel="stylesheet" th:href="@{/css/PaginaPrincipal.css}">
 </head>
 <body th:attr="data-rol=${#authentication.authorities[0].authority}">
-	<nav style="background-color: #212529; height: 81px; padding: 15px 85px;">
+	<nav
+		style="background-color: #212529; height: 81px; padding: 15px 85px;">
 		<div
 			style="display: flex; justify-content: space-between; align-items: center; height: 100%;">
 
-			<a href="#" 
+			<a href="#"
 				style="color: white; font-size: 2.4rem; text-decoration: none;">
 				<strong class="navbar">Web de Reservas</strong>
 			</a>
-			
+
 			<div class="d-flex justify-content-center align-items-center">
-			    <div sec:authorize="isAuthenticated()" class="d-flex justify-content-center align-items-center">
-			        <button class="btn btn-secondary btn-sm"
-			                style="font-size: 1.2rem; padding: 10px 20px; margin-right: 10px;"
-			                onclick="volverPaginaAnterior();">
-			            <strong>Continuar Navegando</strong>
-			        </button>
-			
-			        <form th:action="@{/logout}" method="post" style="display: inline-block; margin: 0; padding: 0;">
-			            <button class="btn btn-danger btn-sm"
-			                    style="font-size: 1.2rem; padding: 10px 20px;"
-			                    type="submit">
-			                <strong>Cerrar sesión</strong>
-			            </button>
-			        </form>
-			    </div>
-			
-			    <div sec:authorize="isAnonymous()" style="margin-left: 10px;">
-			        <a href="/login" class="btn btn-success"
-			           style="font-size: 1.2rem; padding: 10px 20px;">
-			            <strong>Iniciar sesión</strong>
-			        </a>
-			    </div>
+				<div sec:authorize="isAuthenticated()"
+					class="d-flex justify-content-center align-items-center">
+					<button class="btn btn-secondary btn-sm"
+						style="font-size: 1.2rem; padding: 10px 20px; margin-right: 10px;"
+						onclick="volverPaginaAnterior();">
+						<strong>Continuar Navegando</strong>
+					</button>
+
+					<form th:action="@{/logout}" method="post"
+						style="display: inline-block; margin: 0; padding: 0;">
+						<button class="btn btn-danger btn-sm"
+							style="font-size: 1.2rem; padding: 10px 20px;" type="submit">
+							<strong>Cerrar sesión</strong>
+						</button>
+					</form>
+				</div>
+
+				<div sec:authorize="isAnonymous()" style="margin-left: 10px;">
+					<a href="/login" class="btn btn-success"
+						style="font-size: 1.2rem; padding: 10px 20px;"> <strong>Iniciar
+							sesión</strong>
+					</a>
+				</div>
 			</div>
 		</div>
 	</nav>
@@ -99,31 +104,61 @@
 
 	</div>
 
-	<footer> &copy; 2025 Monterrico Polo Aparts. Todos los
-		derechos reservados. </footer>
-	
+	<footer class="footer-custom mt-5">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6">
+					<h4 class="fw-bold">Contáctanos</h4>
+					<hr class="hr-centered">
+					<ul class="list-unstyled">
+						<li class="mb-3 d-flex align-items-center"><i
+							class="bi bi-whatsapp icon text-success"></i> <a
+							href="https://wa.me/51977536825?text=Hola%2C%20estoy%20interesado%20en%20más%20información"
+							target="_blank"> +51 977 536 825 </a></li>
+						<li class="d-flex align-items-center"><i
+							class="bi bi-envelope-fill icon text-danger"></i> <a
+							href="mailto:villdarkk@gmail.com"> villdarkk@gmail.com </a></li>
+					</ul>
+					<br>
+				</div>
+				
+				<div class="col-md-6 text-center">
+					<h4 class="fw-bold">MonterricoPoloAparts</h4>
+					<hr class="hr-centered">
+					<p>
+						Ofrecemos inmuebles seguros y totalmente verificados para
+						alquilar.<br> Encuentra con nosotros el lugar perfecto para vivir
+					</p>
+				</div>
+				<br>
+			</div>
+			<div class="footer-bottom">&copy; 2025 Monterrico Polo Aparts. Todos los derechos reservados</div>
+		</div>
+	</footer>
+
+
 	<script>
-	    function volverPaginaAnterior() {
-	        if (history.length > 1) {
-	            history.back();
-	        } else {
-	            const ultima = localStorage.getItem("ultimaPagina");
-	            if (ultima && ultima !== window.location.href) {
-	                localStorage.removeItem("ultimaPagina");
-	                window.location.href = ultima;
-	            } else {
-	                const rol = document.body.getAttribute("data-rol");
-	
-	                if (rol === "ROLE_admin") {
-	                    window.location.href = "/admin/home";
-	                } else if (rol === "ROLE_cliente") {
-	                    window.location.href = "/cliente/home";
-	                } else {
-	                    window.location.href = "/";
-	                }
-	            }
-	        }
-	    }
+		function volverPaginaAnterior() {
+			if (history.length > 1) {
+				history.back();
+			} else {
+				const ultima = localStorage.getItem("ultimaPagina");
+				if (ultima && ultima !== window.location.href) {
+					localStorage.removeItem("ultimaPagina");
+					window.location.href = ultima;
+				} else {
+					const rol = document.body.getAttribute("data-rol");
+
+					if (rol === "ROLE_admin") {
+						window.location.href = "/admin/home";
+					} else if (rol === "ROLE_cliente") {
+						window.location.href = "/cliente/home";
+					} else {
+						window.location.href = "/";
+					}
+				}
+			}
+		}
 	</script>
 	<!-- Para saber el nombre del rol -->
 	<!-- <p th:text="${#authentication.authorities}"></p> -->

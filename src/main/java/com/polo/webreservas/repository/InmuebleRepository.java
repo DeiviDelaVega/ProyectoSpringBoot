@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -32,4 +33,8 @@ public interface InmuebleRepository extends JpaRepository<Inmueble, Integer>, Jp
 		);
 	
 	Page<Inmueble> findByDisponibilidad(String disponibilidad, Pageable pageable);
+	
+	@Modifying
+	@Query("UPDATE Inmueble i SET i.latitud = :lat, i.longitud = :lng WHERE i.id = :id")
+	void actualizarUbicacion(@Param("lat") Double lat, @Param("lng") Double lng, @Param("id") Integer id);
 }

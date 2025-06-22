@@ -34,6 +34,24 @@
 input[type="date"] {
 	text-align: center;
 }
+
+.map-wrapper {
+    width: 100%;
+    max-width: 1000px;        
+    height: 400px;
+    margin: 20px auto;       
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid #ccc;
+    background: #f9f9f9;
+    position: relative;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
 </style>
 
 </head>
@@ -90,7 +108,7 @@ input[type="date"] {
 		</div>
 
 		<hr class="my-4" />
-
+		<br>
 		<!-- Información detallada -->
 		<div class="row">
 			<div class="col-md-6">
@@ -119,6 +137,46 @@ input[type="date"] {
 				</p>
 			</div>
 		</div>
+		
+		<br>
+		<div th:if="${inmueble.latitud != null and inmueble.longitud != null}" class="col-md-12 text-center">
+		    <p class="info-item">
+				<strong>Ubicación en el Mapa:</strong>
+			</p>
+		    <div class="map-wrapper">
+		    	<div id="map"></div>
+		    </div>
+			
+			<script th:inline="javascript">
+		        /*<![CDATA[*/
+		        const lat = /*[[${inmueble.latitud}]]*/ 0;
+		        const lng = /*[[${inmueble.longitud}]]*/ 0;
+		        const nombre = /*[['' + ${inmueble.nombre}]]*/ 'Inmueble';
+		
+		        function initMap() {
+		            const ubicacion = { lat: lat, lng: lng };
+		            const map = new google.maps.Map(document.getElementById("map"), {
+		                zoom: 15,
+		                center: ubicacion
+		            });
+		
+		            new google.maps.Marker({
+		                position: ubicacion,
+		                map: map,
+		                title: nombre
+		            });
+		        }
+		        /*]]>*/
+		    </script>
+		
+		    <script async defer
+		        th:src="@{'https://maps.googleapis.com/maps/api/js?key=AIzaSyCc1pV5K0s9Z7xGUUU03n6zBhKemKLiRx8&callback=initMap'}">
+		    </script>
+		</div>
+		<div th:if="${inmueble.latitud == null or inmueble.longitud == null}">
+		    <p><em>Este inmueble no tiene ubicación registrada</em></p>
+		</div>
+		<br>
 
 		<hr class="my-4" />
 
@@ -126,6 +184,7 @@ input[type="date"] {
 			th:onclick="|confirmarRegreso('/cliente/catalogo/verInmueble')|">
 			← Volver al Catálogo </a>
 	</div>
+	<br><br>
 
 	<!-- Script para calcular total -->
 	<script th:inline="javascript">
