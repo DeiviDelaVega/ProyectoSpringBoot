@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 
 <head>
 	<meta charset="UTF-8">
@@ -14,7 +14,7 @@
 <body>
 	<nav th:replace="cliente/HeaderNavCliente :: nav"></nav>
 	<br>
-	<div class="list-clientes-container container py-4">
+	<div class="list-clientes-container container py-4 fade-in">
 		<!-- TÍTULO -->
 		<h3 class="text-center my-4">Inmuebles Disponibles</h3>
 
@@ -119,7 +119,19 @@
 								<h5 class="text-primary"
 									th:text="'S/ ' + ${#numbers.formatDecimal(inmueble.precioPorNoche, 1, 2)}">Precio
 								</h5>
-								<a th:href="@{/cliente/catalogo/detalle/{id}(id=${inmueble.id})}" class="btn btn-dark">Ver</a>
+								<!-- Botón habilitado solo si está disponible -->
+								<a th:if="${inmueble.disponibilidad == 'Si'}"
+								   th:href="@{/cliente/catalogo/detalle/{id}(id=${inmueble.id})}" 
+								   class="btn btn-dark">
+								   Ver
+								</a>
+								<!-- Botón deshabilitado si no está disponible -->
+								<a th:if="${inmueble.disponibilidad != 'Si'}"
+								   class="btn btn-dark disabled" 
+								   tabindex="-1" 
+								   aria-disabled="true">
+								   Ver
+								</a>
 							</div>
 						</div>
 					</div>
