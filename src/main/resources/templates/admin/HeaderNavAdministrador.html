@@ -35,10 +35,12 @@
 						       style="text-align: center; justify-content: center; color: white !important;">
 						        ⚙️Reportes
 						    </a>
-						    <ul class="dropdown-menu" aria-labelledby="reportesDropdown">
-						        <li><a class="dropdown-item" href="/admin/reportes/InmueblesMasReservados">🏘️ Inmuebles más reservados</a></li>
-						        <li><a class="dropdown-item" href="/admin/reportes/ClientesMasReservas">👥 Clientes con más reservas</a></li>
-						    </ul>
+						    <ul class="dropdown-menu bg-dark text-white"
+							    aria-labelledby="reportesDropdown"
+							    style="left: 50%; transform: translateX(-50%);">
+							    <li><a class="dropdown-item text-white" href="/admin/reportes/InmueblesMasReservados">🏘️ Inmuebles más reservados</a></li>
+							    <li><a class="dropdown-item text-white" href="/admin/reportes/ClientesMasReservas">👥 Clientes con más reservas</a></li>
+							</ul>
 						</li>
                          <li class="nav-item d-flex align-items-center justify-content-center">
 					        <form th:action="@{/logout}" method="post">
