@@ -36,21 +36,21 @@ input[type="date"] {
 }
 
 .map-wrapper {
-    width: 100%;
-    max-width: 1000px;        
-    height: 400px;
-    margin: 20px auto;       
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    border: 1px solid #ccc;
-    background: #f9f9f9;
-    position: relative;
+	width: 100%;
+	max-width: 1000px;
+	height: 400px;
+	margin: 20px auto;
+	border-radius: 12px;
+	overflow: hidden;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+	border: 1px solid #ccc;
+	background: #f9f9f9;
+	position: relative;
 }
 
 #map {
-    width: 100%;
-    height: 100%;
+	width: 100%;
+	height: 100%;
 }
 </style>
 
@@ -92,16 +92,26 @@ input[type="date"] {
 					<p>
 						<strong>Total:</strong> S/. <span id="precioTotal">0.00</span>
 					</p>
-					<form th:action="@{/pago/crear-checkout-session}" method="POST" id="formPago">
+					<form th:action="@{/pago/crear-checkout-session}" method="POST"
+						id="formPago">
 
 
-  <input type="hidden" name="fechaInicio" id="fechaInicioInput">
-  <input type="hidden" name="fechaFin" id="fechaFinInput">
-  <input type="hidden" name="total" id="totalInput">
-  <input type="hidden" name="inmuebleId" th:value="${inmueble.id}">
-  <button type="submit" class="btn btn-success w-100" id="btnPagar">Pagar con tarjeta</button>
+						<input type="hidden" name="fechaInicio" id="fechaInicioInput">
+						<input type="hidden" name="fechaFin" id="fechaFinInput"> <input
+							type="hidden" name="total" id="totalInput"> <input
+							type="hidden" name="inmuebleId" th:value="${inmueble.id}">
 
-</form>
+						<div class="form-check mb-3 d-flex align-items-center justify-content-center gap-2">
+    <input class="form-check-input" type="checkbox" id="aceptoTerminos" style="margin-top: 0.1rem;">
+    <label class="form-check-label" for="aceptoTerminos" style="font-size: 0.95rem;">
+        Acepto los <a href="/cliente/catalogo/terminos" target="_blank">Términos y Condiciones</a>.
+    </label>
+</div>
+
+						<button type="submit" class="btn btn-success w-100" id="btnPagar">Pagar
+							con tarjeta</button>
+
+					</form>
 
 				</div>
 			</div>
@@ -137,16 +147,17 @@ input[type="date"] {
 				</p>
 			</div>
 		</div>
-		
+
 		<br>
-		<div th:if="${inmueble.latitud != null and inmueble.longitud != null}" class="col-md-12 text-center">
-		    <p class="info-item">
+		<div th:if="${inmueble.latitud != null and inmueble.longitud != null}"
+			class="col-md-12 text-center">
+			<p class="info-item">
 				<strong>Ubicación en el Mapa:</strong>
 			</p>
-		    <div class="map-wrapper">
-		    	<div id="map"></div>
-		    </div>
-			
+			<div class="map-wrapper">
+				<div id="map"></div>
+			</div>
+
 			<script th:inline="javascript">
 		        /*<![CDATA[*/
 		        const lat = /*[[${inmueble.latitud}]]*/ 0;
@@ -168,13 +179,15 @@ input[type="date"] {
 		        }
 		        /*]]>*/
 		    </script>
-		
-		    <script async defer
-		        th:src="@{'https://maps.googleapis.com/maps/api/js?key=AIzaSyCc1pV5K0s9Z7xGUUU03n6zBhKemKLiRx8&callback=initMap'}">
+
+			<script async defer
+				th:src="@{'https://maps.googleapis.com/maps/api/js?key=AIzaSyCc1pV5K0s9Z7xGUUU03n6zBhKemKLiRx8&callback=initMap'}">
 		    </script>
 		</div>
 		<div th:if="${inmueble.latitud == null or inmueble.longitud == null}">
-		    <p><em>Este inmueble no tiene ubicación registrada</em></p>
+			<p>
+				<em>Este inmueble no tiene ubicación registrada</em>
+			</p>
 		</div>
 		<br>
 
@@ -184,7 +197,8 @@ input[type="date"] {
 			th:onclick="|confirmarRegreso('/cliente/catalogo/verInmueble')|">
 			← Volver al Catálogo </a>
 	</div>
-	<br><br>
+	<br>
+	<br>
 
 	<!-- Script para calcular total -->
 	<script th:inline="javascript">
@@ -244,6 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const entrada = document.getElementById('entrada').value;
         const salida = document.getElementById('salida').value;
         const total = document.getElementById('precioTotal').textContent;
+        const checkTerminos = document.getElementById('aceptoTerminos'); // ✅ aquí estaba el error
 
         if (!entrada || !salida || total === '0.00') {
             Swal.fire({
@@ -254,12 +269,24 @@ document.addEventListener("DOMContentLoaded", function () {
             return false;
         }
 
+        if (!checkTerminos.checked) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Términos no aceptados',
+                text: 'Debes aceptar los Términos y Condiciones para continuar.'
+            });
+            return false;
+        }
+
         document.getElementById('fechaInicioInput').value = entrada;
         document.getElementById('fechaFinInput').value = salida;
         document.getElementById('totalInput').value = total;
 
         return true; // permite el submit si todo está bien
     }
+
+    
+    
 
 
     function confirmarRegreso(url) {
