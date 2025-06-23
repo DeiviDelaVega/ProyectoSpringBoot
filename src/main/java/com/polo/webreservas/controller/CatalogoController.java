@@ -104,6 +104,12 @@ public class CatalogoController {
 	public List<LocalDate> obtenerFechasOcupadas(@PathVariable Long idInmueble) {
 	    return reservaService.obtenerFechasOcupadas(idInmueble);
 	}
+	
+	@GetMapping("/catalogo/terminos")
+	public String mostrarTerminosCondiciones() {
+	    return "cliente/catalogo/terminos"; 
+	}
+
 
 
 }
