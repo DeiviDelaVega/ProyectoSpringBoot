@@ -14,7 +14,7 @@ public interface ClienteService {
 	public Cliente obtenerClientePorId(Integer id);
 	public Cliente actualizarCliente(Cliente cliente);
 	public void eliminarCliente(Integer id);
-	
+	public List<Object[]> obtenerClientesMasReservas();
 	public Page<Cliente> listarTodoPaginacion(Pageable pageable);
 	public Page<Cliente> listarTodoConFiltro(String filtro, Pageable pageable);
 }

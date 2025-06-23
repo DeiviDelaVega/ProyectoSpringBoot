@@ -5,7 +5,7 @@
 </head>
 <body>
     <div th:fragment="nav">
-        <nav class="navbar navbar-expand-lg" style="background-color: #212529 !important;">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="background-color: #212529 !important;">
             <div class="container">
                 <a class="navbar-brand" th:href="@{/}" style="font-size: 24px; color: white !important">
                     <strong>Web de Reservas</strong>
@@ -27,7 +27,7 @@
                         <li class="nav-item">
                             <a class="nav-link px-3 rounded" href="/admin/reserva/reservas" style="text-align: center; justify-content: center; color: white !important">🛠️ Mantenimiento de Reservas</a>
                         </li>
-						<li class="nav-item dropdown custom-hover-dropdown">
+                        <li class="nav-item dropdown custom-hover-dropdown d-flex align-items-center justify-content-center">
 						    <a class="nav-link dropdown-toggle px-3 rounded"
 						       href="#" id="reportesDropdown"
 						       role="button" data-bs-toggle="dropdown"
@@ -35,14 +35,18 @@
 						       style="text-align: center; justify-content: center; color: white !important;">
 						        ⚙️Reportes
 						    </a>
-						    <ul class="dropdown-menu" aria-labelledby="reportesDropdown">
-						        <li><a class="dropdown-item" href="/admin/reportes/InmueblesMasReservados">🏘️ Inmuebles más reservados</a></li>
-						        <li><a class="dropdown-item disabled" href="#">👥 Clientes con más reservas</a></li>
-						    </ul>
+						    <ul class="dropdown-menu bg-dark text-white"
+							    aria-labelledby="reportesDropdown"
+							    style="left: 50%; transform: translateX(-50%);">
+							    <li><a class="dropdown-item text-white" href="/admin/reportes/InmueblesMasReservados">🏘️ Inmuebles más reservados</a></li>
+							    <li><a class="dropdown-item text-white" href="/admin/reportes/ClientesMasReservas">👥 Clientes con más reservas</a></li>
+							</ul>
 						</li>
-                        <form th:action="@{/logout}" method="post" class="d-flex justify-content-center align-items-center">
-                            <button class="btn btn-danger btn-sm" type="submit">Cerrar sesión</button>
-                        </form>
+                         <li class="nav-item d-flex align-items-center justify-content-center">
+					        <form th:action="@{/logout}" method="post">
+					            <button class="btn btn-danger btn-sm" type="submit">Cerrar sesión</button>
+					        </form>
+					    </li>
                     </ul>
                 </div>
             </div>

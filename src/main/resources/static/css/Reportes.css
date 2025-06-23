@@ -18,3 +18,32 @@
     white-space: nowrap;
 	color: white;
 }
+
+.fade-in {
+    animation: fadeIn2 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeIn2 {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+@media (max-width: 600px) {
+    .chart-title {
+        font-size: 1.2em;
+    }
+    .chart-legend {
+        font-size: 0.8em;
+    }
+}
+
+@media (min-width: 1200px) {
+    .chart-title {
+        font-size: 2em;
+    }
+}

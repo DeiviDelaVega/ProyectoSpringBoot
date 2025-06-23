@@ -8,7 +8,8 @@ body {
 
 .navbar {
     margin-bottom: 0px;
-    padding: 15px 70px;
+    padding: 0.5rem 1rem;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 .navbar a {
@@ -34,6 +35,15 @@ body {
 .text-center span {
     color: #e74c3c;
     font-weight: bold;
+}
+
+.fade-in {
+    animation: fadeIn2 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeIn2 {
+	from { opacity: 0; }
+	to { opacity: 1; }
 }
 
 .banner-container {
