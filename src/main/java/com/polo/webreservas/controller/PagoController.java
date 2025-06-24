@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.*;
 
 import com.polo.webreservas.model.Cliente;
 import com.polo.webreservas.model.Inmueble;
+import com.polo.webreservas.model.Pago;
 import com.polo.webreservas.model.Reserva;
 import com.polo.webreservas.repository.ClienteRepository;
 import com.polo.webreservas.repository.InmuebleRepository;
 import com.polo.webreservas.repository.ReservaRepository;
+import com.polo.webreservas.service.PagoService;
 import com.polo.webreservas.service.ReservaService;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -44,6 +46,10 @@ public class PagoController {
     @Autowired
     private ReservaService reservaService;
     
+    @Autowired
+    private PagoService pagoService;
+
+    
     @PostConstruct
     public void init() {
         Stripe.apiKey = stripeSecretKey;
@@ -66,7 +72,7 @@ public class PagoController {
 
         SessionCreateParams params = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("http://localhost:9090/pago/reserva-exitosa")
+                .setSuccessUrl("http://localhost:9090/pago/reserva-exitosa?session_id={CHECKOUT_SESSION_ID}")
                 .setCancelUrl("http://localhost:9090/pago/error")
                 .addLineItem(SessionCreateParams.LineItem.builder()
                         .setQuantity(1L)
@@ -81,11 +87,18 @@ public class PagoController {
                 .build();
 
         Session stripeSession = Session.create(params);
+        
+        session.setAttribute("fechaInicio", fechaInicio);
+        session.setAttribute("fechaFin", fechaFin);
+        session.setAttribute("total", total);
+        session.setAttribute("inmuebleId", inmuebleId);
+        session.setAttribute("stripePaymentId", stripeSession.getPaymentIntent());
+
         return "redirect:" + stripeSession.getUrl();
     }
 
     @GetMapping("/reserva-exitosa")
-    public String reservaExitosa(HttpSession session, Model model, Authentication auth) {
+    public String reservaExitosa(@RequestParam("session_id") String sessionId,HttpSession session, Model model, Authentication auth) throws StripeException{
         String correo = auth.getName();
         Cliente cliente = clienteRepository.findByCorreo(correo);
 
@@ -98,6 +111,9 @@ public class PagoController {
             model.addAttribute("error", "Error al recuperar los datos de la reserva.");
             return "error";
         }
+        
+        Session stripeSession = Session.retrieve(sessionId);
+        String paymentIntentId = stripeSession.getPaymentIntent();
 
         Inmueble inmueble = inmuebleRepository.findById(inmuebleId).orElseThrow();
 
@@ -112,17 +128,25 @@ public class PagoController {
 
         reservaService.guardar(reserva);
         
+        Pago pago = new Pago();
+        pago.setReserva(reserva);
+        pago.setFechaPago(java.time.LocalDateTime.now());
+        pago.setMonto(new BigDecimal(totalStr));
+        pago.setStripePaymentId(paymentIntentId);
+        pagoService.guardar(pago);
+
         session.removeAttribute("fechaInicio");
         session.removeAttribute("fechaFin");
         session.removeAttribute("total");
         session.removeAttribute("inmuebleId");
+        session.removeAttribute("stripePaymentId");
 
         model.addAttribute("mensaje", "¡Reserva exitosa!");
         return "cliente/reserva-exitosa";
     }
 
     @GetMapping("/error")
-    public String errorPago(Model model) {
+    public String errorPago(Model model) { 
         model.addAttribute("mensaje", "El pago fue cancelado o falló.");
         return "cliente/pago-error";
     }
