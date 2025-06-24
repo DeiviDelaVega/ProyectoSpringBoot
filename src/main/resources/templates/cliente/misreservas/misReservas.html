@@ -19,7 +19,7 @@
         No tienes reservas registradas.
     </div>
 
-    <div th:each="reserva : ${reservas.content}" th:if="${reserva != null and reserva.inmueble != null}" class="card mb-2 shadow-sm reserva-card">
+    <div th:each="reserva : ${reservas.content}" th:if="${reserva != null and reserva.inmueble != null}" th:id="'card-' + ${reserva.id}" class="card mb-2 shadow-sm reserva-card">
         <div class="row g-0">
             <div class="col-md-4">
                 <img th:src="${reserva.inmueble.imagenHabitacion}" class="img-fluid rounded-start" alt="Imagen del inmueble">
@@ -64,17 +64,16 @@
 							       th:onclick="'generarPDF(' + ${reserva.id} + ')'">
 							       <i class="fas fa-file-pdf"></i> Descargar PDF
 							   </button>
-							   
+							  
 							   <button 
 							       th:id="'btnReembolso-' + ${reserva.id}"
 							       class="btn btn-danger btn-sm btn-reembolso"
-							       th:onclick="|confirmarReembolso('/cliente/misreservas/reembolso/${reserva.id}')|"
+								   th:onclick="|confirmarReembolso('/cliente/misreservas/reembolso/${reserva.id}', ${reserva.id})|"
 							       data-bs-toggle="tooltip"
 							       data-bs-placement="top"
 							       title="Reembolsar solo estará disponible durante 1 minuto">
 							       <i class="fas fa-undo-alt"></i> Reembolsar
 							   </button>
-							
 						    <a th:href="@{/cliente/catalogo/detalle/{id}(id=${reserva.inmueble.id})}" 
 						       class="btn btn-dark btn-sm btn-ver">
 						       <i class="fas fa-eye"></i> Ver
@@ -100,7 +99,7 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    function confirmarReembolso(url) {
+    function confirmarReembolso(url, reservaId) {
         Swal.fire({
             title: '¿Estás seguro de reembolsar?',
             text: "Recibirá su dinero en 5 días hábiles",
@@ -112,21 +111,35 @@
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = url;
+                fetch(url, { method: 'GET' })
+                    .then(response => {
+                        if (!response.ok) throw new Error("Error al eliminar");
+                        return response.text();
+                    })
+                    .then(() => {
+                        Swal.fire({
+                            title: '¡Reserva cancelada!',
+                            text: 'La reserva se ha eliminado correctamente',
+                            icon: 'success',
+                            confirmButtonText: 'Aceptar'
+                        }).then(() => {
+                            const card = document.getElementById(`card-${reservaId}`);
+                            if (card) card.remove();
+                        });
+                    })
+                    .catch(() => {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'No se pudo cancelar la reserva.',
+                            icon: 'error'
+                        });
+                    });
             }
         });
     }
 </script>
-<div th:if="${eliminado}">
-    <script>
-        Swal.fire({
-            title: '¡Reserva cancelada!',
-            text: 'La reserva se ha eliminado correctamente',
-            icon: 'success',
-            confirmButtonText: 'Aceptar'
-        });
-    </script>
-</div>
+
+
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const now = new Date();
@@ -139,7 +152,7 @@
       const diffMilis = now - fechaReserva;
       const diffMinutos = diffMilis / 1000 / 60;
 
-      if (diffMinutos > 1) {
+      if (diffMinutos > 30) {
         const btn = document.querySelector(`#btnReembolso-${reservaId}`);
         if (btn) btn.style.display = 'none';
       }
