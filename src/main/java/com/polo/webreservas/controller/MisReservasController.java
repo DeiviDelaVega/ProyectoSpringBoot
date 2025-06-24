@@ -4,6 +4,7 @@ package com.polo.webreservas.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +15,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.polo.webreservas.model.Pago;
 import com.polo.webreservas.model.Reserva;
+import com.polo.webreservas.service.EmailService;
+import com.polo.webreservas.service.PagoService;
 import com.polo.webreservas.service.ReservaService;
 
 import java.security.Principal;
@@ -30,11 +34,39 @@ public class MisReservasController {
 
     @Autowired
     private ReservaService reservaService;
+    
+    @Autowired
+    private PagoService pagoService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Value("${admin.email}")
+    private String correoAdmin;
+
 
     
     @GetMapping("/reembolso/{id}")
     public String procesarReembolso(@PathVariable Long id) {
-        reservaService.eliminar(id); // Elimina directamente de la base de datos
+        Optional<Reserva> reservaOpt = reservaService.obtenerPorId(id);
+
+        if (reservaOpt.isPresent()) {
+            Reserva reserva = reservaOpt.get();
+            Pago pago = pagoService.buscarPorReserva(reserva);
+
+            if (pago != null) {
+                pagoService.eliminar(pago);
+            }
+
+            reservaService.eliminar(id);
+
+            try {
+                emailService.enviarReembolsoAdmin(correoAdmin, reserva, pago);
+            } catch (Exception e) {
+                System.err.println("Error al enviar correo de reembolso: " + e.getMessage());
+            }
+        }
+
         return "redirect:/cliente/misreservas/misReservas";
     }
     
