@@ -1,0 +1,105 @@
+.content-container {
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      background-color: #fff;
+  }
+
+  .section-title {
+      text-align: center;
+      font-weight: bold;
+  }
+
+  .icon-action {
+      margin: 0 8px;
+      color: #333;
+      transition: color 0.3s ease, transform 0.2s ease;
+  }
+
+  .icon-action:hover {
+      color: #000;
+      transform: scale(1.1);
+  }
+
+  thead {
+      background-color: #343a40;
+      color: white;
+  }
+
+  .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+  }
+  
+  
+  @media (max-width: 576px) {
+      .content-container {
+          padding: 15px 10px;
+          margin: 10px;
+          box-shadow: none;
+          border-radius: 6px;
+      }
+
+      .section-title {
+          font-size: 20px;
+      }
+
+      .form-inline {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+      }
+
+      .form-inline input[type="date"],
+      .form-inline select,
+      .form-inline button,
+      .form-inline .form-control {
+          width: 100%;
+          margin-bottom: 10px;
+      }
+
+      .form-inline label {
+          margin-bottom: 4px;
+          font-weight: 600;
+      }
+
+      .table {
+          font-size: 12px;
+      }
+
+      thead {
+          font-size: 13px;
+      }
+
+      .table th,
+      .table td {
+          white-space: nowrap;
+          padding: 8px;
+      }
+
+      .icon-action {
+          margin: 0 4px;
+          font-size: 16px;
+      }
+
+      #toggleFiltrosBtn {
+          width: 100%;
+          font-size: 14px;
+      }
+
+      .d-flex.mb-3 {
+          flex-direction: column;
+          gap: 10px;
+      }
+	  
+	  .table-responsive {
+	      overflow-x: auto;
+	  }
+
+  }
+
+  
