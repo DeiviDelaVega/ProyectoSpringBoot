@@ -72,8 +72,8 @@ public class PagoController {
 
         SessionCreateParams params = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("https://webreservas-production.up.railway.app/pago/reserva-exitosa?session_id={CHECKOUT_SESSION_ID}")
-                .setCancelUrl("https://webreservas-production.up.railway.app/pago/error")
+                .setSuccessUrl("https://proyectospringboot-production.up.railway.app/pago/reserva-exitosa?session_id={CHECKOUT_SESSION_ID}")
+                .setCancelUrl("https://proyectospringboot-production.up.railway.app/pago/error")
                 .addLineItem(SessionCreateParams.LineItem.builder()
                         .setQuantity(1L)
                         .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
