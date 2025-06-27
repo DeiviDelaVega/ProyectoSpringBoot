@@ -25,30 +25,40 @@
         <h2>Inicio de sesión</h2>
 
         <form th:action="@{/login}" method="post">
-            <div>
-                <label for="username">Correo electrónico:</label>
-                <input type="email" name="username" id="username" placeholder="Ej. cliente@example.com" required />
-            </div>
+    <div>
+        <label for="username">Correo electrónico:</label>
+        <input type="email" name="username" id="username" placeholder="Ej. cliente@example.com" required />
+    </div>
 
-            <div>
-                <label for="password">Contraseña:</label>
-                <input type="password" name="password" id="password" placeholder="Tu contraseña" required />
-            </div>
-            
-            <div th:if="${param.error}">
-                <div class="alert-danger">Correo o contraseña inválidos</div>
-            </div>
+    <div>
+        <label for="password">Contraseña:</label>
+        <input type="password" name="password" id="password" placeholder="Tu contraseña" required />
+    </div>
 
-            <div th:if="${param.logout}">
-                <div class="alert-danger" style="background-color: #d1ecf1; color: #0c5460;">
-                    Has cerrado sesión correctamente
-                </div>
-            </div>
-            
-            <br>
+    <!-- CAPTCHA -->
+    <div style="margin-top: 15px;">
+        <label for="captcha">Ingresa el código de la imagen:</label><br>
+        <img src="/captcha" alt="CAPTCHA" onclick="this.src='/captcha?'+Math.random()" style="cursor: pointer; border: 1px solid #ccc;" title="Haz clic para refrescar" />
+        <input type="text" name="captcha" id="captcha" placeholder="Escribe el texto" required />
+    </div>
 
-            <button type="submit" class="btn-dark">Iniciar sesión</button>
-        </form>
+    <!-- Mensaje de error si login falla -->
+    <div th:if="${param.error}">
+        <div class="alert-danger">Correo, contraseña o captcha inválidos</div>
+    </div>
+
+    <!-- Mensaje si se cerró sesión -->
+    <div th:if="${param.logout}">
+        <div class="alert-danger" style="background-color: #d1ecf1; color: #0c5460;">
+            Has cerrado sesión correctamente
+        </div>
+    </div>
+
+    <br>
+
+    <button type="submit" class="btn-dark">Iniciar sesión</button>
+</form>
+
 
         <div class="register-link">
             <p>¿No tienes cuenta? <a th:href="@{/registro}"><strong>Regístrate aquí</strong></a></p>
