@@ -149,3 +149,61 @@ label {
 .back-link p {
     font-size: 1.4rem;
 }
+
+
+@media (max-width: 576px) {
+    .containerRegistro {
+        margin-left: 5%;
+        margin-right: 5%;
+        padding: 20px;
+    }
+
+    .form-horizontal {
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .navbar {
+        padding: 10px 20px;
+        text-align: center;
+    }
+
+    .navbar-brand strong {
+        font-size: 18px;
+    }
+
+    h2.text-center {
+        font-size: 22px;
+        margin-top: 20px;
+    }
+
+    label {
+        font-size: 1.3rem;
+    }
+
+    .form-control {
+        font-size: 1.3rem;
+        padding: 0.6rem 1rem;
+        height: auto;
+    }
+
+    .btn-submit {
+		margin-top: 20px;
+        font-size: 1.5rem;
+        padding: 0.9rem 1.5rem;
+    }
+
+    .alert {
+        font-size: 1.3rem;
+        padding: 0.8rem 1.2rem;
+    }
+
+    .back-link p,
+    .back-link a {
+        font-size: 1.3rem;
+    }
+
+    br {
+        display: none;
+    }
+}
