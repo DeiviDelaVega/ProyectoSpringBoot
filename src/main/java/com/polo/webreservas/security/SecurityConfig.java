@@ -41,11 +41,11 @@ public class SecurityConfig {
         http
             .addFilterBefore(captchaValidationFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/registro", "/captcha", "/css/**", "/imagenes/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("admin")
-                .requestMatchers("/cliente/**").hasRole("cliente")
-                .anyRequest().authenticated()
-            )
+            	    .requestMatchers("/login", "/registro", "/registro/admin", "/captcha", "/css/**", "/imagenes/**").permitAll()
+            	    .requestMatchers("/admin/**").hasRole("admin")
+            	    .requestMatchers("/cliente/**").hasRole("cliente")
+            	    .anyRequest().authenticated()
+            	)
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login") // ✅ CLAVE: procesa POST desde el formulario
