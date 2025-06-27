@@ -116,15 +116,47 @@ input[type="email"], input[type="password"] {
 	text-decoration: underline;
 }
 
-@media ( max-width : 768px) {
-	body {
-		flex-direction: column;
-	}
-	.right-panel {
-		display: none;
-	}
-	.left-panel {
-		flex: none;
-		width: 100%;
-	}
+
+@media (max-width: 576px) {
+    body {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .navbar {
+        padding: 10px 20px;
+        text-align: center;
+    }
+
+    .navbar-brand {
+        font-size: 18px;
+    }
+
+    .login-box {
+        padding: 20px;
+        max-width: 90%;
+    }
+
+    input[type="email"], input[type="password"], input[type="text"] {
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    .btn-dark {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    .right-panel {
+        display: none;
+    }
+
+    .register-link p {
+        font-size: 14px;
+    }
+
+    .alert-danger {
+        font-size: 14px;
+        padding: 8px;
+    }
 }
