@@ -20,40 +20,36 @@ import com.polo.webreservas.repository.UsuarioRepository;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    @SuppressWarnings("unused")
-	private final LoginController loginController;
-
-	
 	private final UsuarioRepository usuarioRepository;
 	
-	public SecurityConfig(UsuarioRepository usuarioRepository, LoginController loginController) {
-		this.usuarioRepository = usuarioRepository;
-		this.loginController = loginController;
-	}
-	
-
+	public SecurityConfig(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
+  
+  
     @Autowired
     private CaptchaValidationFilter captchaValidationFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .addFilterBefore(captchaValidationFilter, UsernamePasswordAuthenticationFilter.class)
-            .authorizeHttpRequests(auth -> auth
-            	    .requestMatchers("/login", "/registro", "/registro/admin", "/captcha", "/css/**", "/imagenes/**").permitAll()
-            	    .requestMatchers("/admin/**").hasRole("admin")
-            	    .requestMatchers("/cliente/**").hasRole("cliente")
-            	    .requestMatchers("/pago/**").hasRole("cliente")
-            	    .anyRequest().authenticated()
-            	)
-            .formLogin(form -> form
-                .loginPage("/login")
-                .loginProcessingUrl("/login") // ✅ CLAVE: procesa POST desde el formulario
-                .defaultSuccessUrl("/default", true)
-                .failureUrl("/login?error=true")
-                .permitAll()
-            )
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http
+		.addFilterBefore(new NoCacheFilter(), UsernamePasswordAuthenticationFilter.class)
+		.authorizeHttpRequests(auth -> auth 
+				.requestMatchers("/login", "/registro", "/registro/admin", "/captcha", "/css/**", "/imagenes/**").permitAll()
+				.requestMatchers("/registro/**").permitAll()
+				.requestMatchers("/admin/cliente/MotivoSancion").permitAll()
+				.requestMatchers("/admin/**").hasRole("admin")
+				.requestMatchers("/cliente/**").hasRole("cliente")
+				.requestMatchers("/pago/**").hasRole("cliente")
+				.anyRequest().authenticated()	
+		)
+		.formLogin(form -> form
+				.loginPage("/login")
+				.loginProcessingUrl("/login") // ✅ CLAVE: procesa POST desde el formulario
+				.defaultSuccessUrl("/default", true)
+				.failureUrl("/login?error=true")
+				.permitAll()
+		)
             .logout(logout -> logout
                 .logoutSuccessUrl("/login?logout")
                 .permitAll()
@@ -75,9 +71,7 @@ public class SecurityConfig {
 	                .build();
 	    };
 	}
-
-	
-	
+  
 	@Bean
 	 public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();

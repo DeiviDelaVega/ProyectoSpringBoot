@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Mis Reservas - Cliente</title>
@@ -7,98 +8,113 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 </head>
+
 <body>
 
-<nav th:replace="cliente/HeaderNavCliente :: nav"></nav>
+	<nav th:replace="cliente/HeaderNavCliente :: nav"></nav>
 
-<div class="container pt-3 fade-in">
-	<br>
-    <h4 class="text-center mb-3">🗓️ Mis Reservas Pagadas</h4>
-	<br>
-    <div th:if="${reservas.totalElements == 0}" class="alert alert-info text-center p-2 small">
-        No tienes reservas registradas.
-    </div>
+	<div class="container pt-3 fade-in">
+		<br>
+		<h4 class="text-center mb-3">🗓️ Mis Reservas Pagadas</h4>
+		<br>
 
-    <div th:each="reserva : ${reservas.content}" th:if="${reserva != null and reserva.inmueble != null}" th:id="'card-' + ${reserva.id}" class="card mb-2 shadow-sm reserva-card">
-        <div class="row g-0">
-            <div class="col-md-4">
-                <img th:src="${reserva.inmueble.imagenHabitacion}" class="img-fluid rounded-start" alt="Imagen del inmueble">
-            </div>
-            <div class="col-md-8">
-                <div class="card-body d-flex flex-column justify-content-between h-100 p-2">
-                    <div>
-						<!-- 👇 Campo: Nombre del inmueble -->
-						<h5 class="card-title text-center mb-2">
-						    <strong th:id="'nombre-' + ${reserva.id}" th:text="${reserva.inmueble.nombre}">Nombre Inmueble</strong>
-						</h5>
+		<div th:if="${modalSancion}" class="alert alert-warning text-center fade show" role="alert">
+			<strong th:text="${alerta}">Su cuenta ha sido sancionada.</strong>
+		</div>
 
-						<!-- 👇 Descripción y servicios -->
-						<div class="d-flex justify-content-between mb-1">
-						    <p class="mb-0">
-						        <strong>Descripción:</strong>
-						        <span th:id="'descripcion-' + ${reserva.id}" th:text="${reserva.inmueble.descripcion}"></span>
-						    </p>
-						    <p class="mb-0">
-						        <strong>Servicios:</strong>
-						        <span th:id="'servicios-' + ${reserva.id}" th:text="${reserva.inmueble.serviciosIncluidos}"></span>
-						    </p>
+
+		<div th:if="${reservas.totalElements == 0}" class="alert alert-info text-center p-2 small">
+			No tienes reservas registradas.
+		</div>
+
+		<div th:if="${esActivo}">
+			<div th:each="reserva : ${reservas.content}" th:if="${reserva != null and reserva.inmueble != null}"
+				th:id="'card-' + ${reserva.id}" class="card mb-2 shadow-sm reserva-card">
+				<div class="row g-0">
+					<div class="col-md-4">
+						<img th:src="${reserva.inmueble.imagenHabitacion}" class="img-fluid rounded-start"
+							alt="Imagen del inmueble">
+					</div>
+					<div class="col-md-8">
+						<div class="card-body d-flex flex-column justify-content-between h-100 p-2">
+							<div>
+								<!-- 👇 Campo: Nombre del inmueble -->
+								<h5 class="card-title text-center mb-2">
+									<strong th:id="'nombre-' + ${reserva.id}"
+										th:text="${reserva.inmueble.nombre}">Nombre
+										Inmueble</strong>
+								</h5>
+
+								<!-- 👇 Descripción y servicios -->
+								<div class="d-flex justify-content-between mb-1">
+									<p class="mb-0">
+										<strong>Descripción:</strong>
+										<span th:id="'descripcion-' + ${reserva.id}"
+											th:text="${reserva.inmueble.descripcion}"></span>
+									</p>
+									<p class="mb-0">
+										<strong>Servicios:</strong>
+										<span th:id="'servicios-' + ${reserva.id}"
+											th:text="${reserva.inmueble.serviciosIncluidos}"></span>
+									</p>
+								</div>
+
+								<!-- 👇 Fechas -->
+								<div class="d-flex justify-content-between mb-1">
+									<p class="mb-0">
+										<strong>Desde:</strong>
+										<span th:id="'inicio-' + ${reserva.id}"
+											th:text="${#temporals.format(reserva.fechaInicio, 'dd/MM/yyyy')}"></span><br>
+										<strong>Hasta:</strong>
+										<span th:id="'fin-' + ${reserva.id}"
+											th:text="${#temporals.format(reserva.fechaFin, 'dd/MM/yyyy')}"></span>
+									</p>
+									<p class="mb-0">
+										<strong>Total:</strong>
+										S/. <span th:id="'total-' + ${reserva.id}"
+											th:text="${#numbers.formatDecimal(reserva.montoTotal, 1, 2)}"></span>
+									</p>
+								</div>
+								<div class="d-flex justify-content-between align-items-center mt-2 px-1">
+									<span th:id="'estado-' + ${reserva.id}" class="badge bg-success estado-texto"
+										th:text="${reserva.estadoReserva}">Aprobado</span>
+
+									<button class="btn btn-primary btn-sm"
+										th:onclick="'generarPDF(' + ${reserva.id} + ')'">
+										<i class="fas fa-file-pdf"></i> Descargar PDF
+									</button>
+
+									<button th:id="'btnReembolso-' + ${reserva.id}"
+										class="btn btn-danger btn-sm btn-reembolso"
+										th:onclick="|confirmarReembolso('/cliente/misreservas/reembolso/${reserva.id}', ${reserva.id})|"
+										data-bs-toggle="tooltip" data-bs-placement="top"
+										title="Reembolsar solo estará disponible durante 1 minuto">
+										<i class="fas fa-undo-alt"></i> Reembolsar
+									</button>
+									<a th:href="@{/cliente/catalogo/detalle/{id}(id=${reserva.inmueble.id})}"
+										class="btn btn-dark btn-sm btn-ver">
+										<i class="fas fa-eye"></i> Ver
+									</a>
+									<!-- Datos ocultos para usar en el PDF -->
+									<span th:if="${reserva.cliente != null}" th:id="'nombreCliente-' + ${reserva.id}"
+										th:text="${reserva.cliente.nombre}" style="display: none;">
+									</span>
+									<span th:id="'fechaSolicitud-' + ${reserva.id}" th:text="${reserva.fechaSolicitud}"
+										style="display: none;">
+									</span>
+
+								</div>
+							</div>
 						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div th:if="${page != null and esActivo}">
+			<nav th:replace="Paginacion :: paginator"></nav>
+		</div>
 
-						<!-- 👇 Fechas -->
-						<div class="d-flex justify-content-between mb-1">
-						    <p class="mb-0">
-						        <strong>Desde:</strong>
-						        <span th:id="'inicio-' + ${reserva.id}" th:text="${#temporals.format(reserva.fechaInicio, 'dd/MM/yyyy')}"></span><br>
-						        <strong>Hasta:</strong>
-						        <span th:id="'fin-' + ${reserva.id}" th:text="${#temporals.format(reserva.fechaFin, 'dd/MM/yyyy')}"></span>
-						    </p>
-						    <p class="mb-0">
-						        <strong>Total:</strong>
-						        S/. <span th:id="'total-' + ${reserva.id}" th:text="${#numbers.formatDecimal(reserva.montoTotal, 1, 2)}"></span>
-						    </p>
-						</div>
-						<div class="d-flex justify-content-between align-items-center mt-2 px-1">
-							<span th:id="'estado-' + ${reserva.id}" class="badge bg-success estado-texto" th:text="${reserva.estadoReserva}">Aprobado</span>
-							
-							<button class="btn btn-primary btn-sm"
-							       th:onclick="'generarPDF(' + ${reserva.id} + ')'">
-							       <i class="fas fa-file-pdf"></i> Descargar PDF
-							   </button>
-							  
-							   <button 
-							       th:id="'btnReembolso-' + ${reserva.id}"
-							       class="btn btn-danger btn-sm btn-reembolso"
-								   th:onclick="|confirmarReembolso('/cliente/misreservas/reembolso/${reserva.id}', ${reserva.id})|"
-							       data-bs-toggle="tooltip"
-							       data-bs-placement="top"
-							       title="Reembolsar solo estará disponible durante 1 minuto">
-							       <i class="fas fa-undo-alt"></i> Reembolsar
-							   </button>
-						    <a th:href="@{/cliente/catalogo/detalle/{id}(id=${reserva.inmueble.id})}" 
-						       class="btn btn-dark btn-sm btn-ver">
-						       <i class="fas fa-eye"></i> Ver
-						    </a>
-							<!-- Datos ocultos para usar en el PDF -->
-							<span th:if="${reserva.cliente != null}" 
-							      th:id="'nombreCliente-' + ${reserva.id}" 
-							      th:text="${reserva.cliente.nombre}" 
-							      style="display: none;">
-							 </span>
-							 <span th:id="'fechaSolicitud-' + ${reserva.id}" 
-							       th:text="${reserva.fechaSolicitud}" 
-							       style="display: none;">
-							 </span>
-
-						</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-	<nav th:replace="Paginacion :: paginator"></nav>
-</div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     function confirmarReembolso(url, reservaId) {
@@ -286,7 +302,7 @@
     }
 </script>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
