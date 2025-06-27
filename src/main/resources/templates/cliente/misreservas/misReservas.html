@@ -143,6 +143,8 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const now = new Date();
+    console.log(now);
+    
 
     document.querySelectorAll('[id^="fechaSolicitud-"]').forEach(span => {
       const reservaId = span.id.split('-')[1];
@@ -152,6 +154,7 @@
       const diffMilis = now - fechaReserva;
       const diffMinutos = diffMilis / 1000 / 60;
 
+      console.log("dif" + diffMinutos);
       if (diffMinutos > 1) {
         const btn = document.querySelector(`#btnReembolso-${reservaId}`);
         if (btn) btn.style.display = 'none';
