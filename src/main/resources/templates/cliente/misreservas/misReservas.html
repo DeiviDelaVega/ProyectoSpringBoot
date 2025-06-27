@@ -151,6 +151,8 @@
       const fechaTexto = span.innerText;
 
       const fechaReserva = new Date(fechaTexto);
+      let horasActuales = fechaReserva.getHours();
+      fechaReserva.setHours(horasActuales - 5);
       const diffMilis = now - fechaReserva;
       const diffMinutos = diffMilis / 1000 / 60;
 
