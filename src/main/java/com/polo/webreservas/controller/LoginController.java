@@ -1,12 +1,21 @@
 package com.polo.webreservas.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.polo.webreservas.model.Cliente;
+import com.polo.webreservas.service.ClienteService;
+
+import jakarta.servlet.http.HttpSession;
+
 
 @Controller
 public class LoginController {
+	
+	 @Autowired
+     private ClienteService servicio;
 	
 	@GetMapping("/login")
 	public String login(Authentication auth) {
@@ -17,10 +26,13 @@ public class LoginController {
 	}
 	
 	@GetMapping("/default") 
-	public String redirigir(Authentication auth) {
+	public String redirigir(Authentication auth, HttpSession session) {
 		if(auth.getAuthorities().toString().contains("ROLE_admin")) {
 			return "redirect:/admin/home";
 		} else if(auth.getAuthorities().toString().contains("ROLE_cliente")) {
+			String correo = auth.getName();
+			Cliente cliente = servicio.findByCorreo(correo);
+			session.setAttribute("correo", correo);
 			return "redirect:/cliente/home";
 		}
 		return "redirect:/login?error";

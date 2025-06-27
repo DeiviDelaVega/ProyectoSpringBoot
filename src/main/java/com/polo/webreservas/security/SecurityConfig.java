@@ -18,17 +18,11 @@ import com.polo.webreservas.repository.UsuarioRepository;
 @Configuration
 
 public class SecurityConfig {
-
-    @SuppressWarnings("unused")
-	private final LoginController loginController;
-
-	
 	private final UsuarioRepository usuarioRepository;
 	
-	public SecurityConfig(UsuarioRepository usuarioRepository, LoginController loginController) {
-		this.usuarioRepository = usuarioRepository;
-		this.loginController = loginController;
-	}
+	public SecurityConfig(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -36,6 +30,7 @@ public class SecurityConfig {
 		.addFilterBefore(new NoCacheFilter(), UsernamePasswordAuthenticationFilter.class)
 		.authorizeHttpRequests(auth -> auth 
 				.requestMatchers("/registro/**").permitAll()
+				.requestMatchers("/admin/cliente/MotivoSancion").permitAll()
 				.requestMatchers("/admin/**").hasRole("admin")
 				.requestMatchers("/cliente/**").hasRole("cliente")
 				.anyRequest().permitAll()	
