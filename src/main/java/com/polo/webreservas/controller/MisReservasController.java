@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.polo.webreservas.model.Pago;
 import com.polo.webreservas.model.Reserva;
@@ -47,28 +49,36 @@ public class MisReservasController {
 
     
     @GetMapping("/reembolso/{id}")
-    public String procesarReembolso(@PathVariable Long id) {
-        Optional<Reserva> reservaOpt = reservaService.obtenerPorId(id);
+    @ResponseBody
+    public ResponseEntity<String> procesarReembolso(@PathVariable Long id) {
+        try {
+            Optional<Reserva> reservaOpt = reservaService.obtenerPorId(id);
 
-        if (reservaOpt.isPresent()) {
-            Reserva reserva = reservaOpt.get();
-            Pago pago = pagoService.buscarPorReserva(reserva);
+            if (reservaOpt.isPresent()) {
+                Reserva reserva = reservaOpt.get();
+                Pago pago = pagoService.buscarPorReserva(reserva);
 
-            if (pago != null) {
-                pagoService.eliminar(pago);
+                if (pago != null) {
+                    pagoService.eliminar(pago);
+                }
+
+                reservaService.eliminar(id);
+
+                try {
+                    emailService.enviarReembolsoAdmin(correoAdmin, reserva, pago);
+                } catch (Exception e) {
+                    System.err.println("Error al enviar correo de reembolso: " + e.getMessage());
+                }
+
+                return ResponseEntity.ok("OK");
+            } else {
+                return ResponseEntity.status(404).body("No encontrado");
             }
-
-            reservaService.eliminar(id);
-
-            try {
-                emailService.enviarReembolsoAdmin(correoAdmin, reserva, pago);
-            } catch (Exception e) {
-                System.err.println("Error al enviar correo de reembolso: " + e.getMessage());
-            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error");
         }
-
-        return "redirect:/cliente/misreservas/misReservas";
     }
+
     
     @GetMapping("/misReservas")
     public String verMisReservas(Model model,

@@ -147,7 +147,12 @@ public class PagoController {
             pago.setStripePaymentId(paymentIntentId);
             pagoService.guardar(pago);
 
-            session.invalidate(); // Limpieza total
+            // ✅ Limpieza selectiva (NO invalidar sesión completa)
+            session.removeAttribute("fechaInicio");
+            session.removeAttribute("fechaFin");
+            session.removeAttribute("total");
+            session.removeAttribute("inmuebleId");
+            session.removeAttribute("stripePaymentId");
 
             model.addAttribute("mensaje", "¡Reserva exitosa!");
             return "cliente/reserva-exitosa";
