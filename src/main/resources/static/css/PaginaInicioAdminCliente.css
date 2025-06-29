@@ -87,7 +87,7 @@ body {
     }
 
     body {
-        padding: 0 10px;
+        padding: 0 0px;
     }
 
     h1.text-center, h2.text-center {
@@ -105,5 +105,28 @@ body {
 
     .fade-in {
         animation: none; /* para evitar saltos en pantallas pequeñas */
+    }
+}
+
+@media (max-width: 480px) {
+    .text-center {
+        padding: 0 10px;
+    }
+
+    .banner-container {
+        margin: 20px auto; 
+        height: auto;
+        max-height: 250px;
+        border-radius: 8px;
+        width: 90%;
+    }
+
+    .banner-container img {
+        height: auto;
+        max-height: 250px;
+        width: 100%; 
+        object-fit: cover;
+        border-radius: 8px;
+        display: block;
     }
 }

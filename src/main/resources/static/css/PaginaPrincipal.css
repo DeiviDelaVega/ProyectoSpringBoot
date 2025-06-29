@@ -20,7 +20,7 @@ body {
 }
 
 .navbar a {
-    color: white !important;
+	color: white !important;
 }
 
 header {
@@ -30,6 +30,7 @@ header {
 	color: var(--blanco);
 	padding: 100px 20px;
 	text-align: center;
+	margin-bottom: 30px;
 }
 
 header h1 {
@@ -49,7 +50,6 @@ header p {
 
 section {
 	background-color: var(--blanco);
-	margin-bottom: 50px;
 	padding: 50px;
 	border-radius: 14px;
 	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
@@ -57,6 +57,7 @@ section {
 	flex-wrap: wrap;
 	align-items: center;
 	gap: 40px;
+	margin-bottom: 50px;
 }
 
 section img {
@@ -92,6 +93,73 @@ footer {
 	font-size: 1.5rem;
 }
 
+.footer-custom {
+	background-color: #111;
+	color: #fff;
+	font-family: 'Segoe UI', sans-serif;
+	padding-top: 3rem;
+	padding-bottom: 2rem;
+}
+
+.footer-custom h4 {
+	font-size: 2rem;
+	margin-bottom: 1rem;
+	color: #fff;
+}
+
+.footer-custom h4 {
+	font-size: 2rem;
+	margin-bottom: 0.5rem;
+	color: #fff;
+	position: relative;
+}
+
+.footer-custom hr {
+	border-top: 3px solid #9575cd;
+	width: 300px;
+	margin: 0 0 1.5rem 0;
+}
+
+.hr-centered {
+	display: inline-block;
+	border: none;
+	border-top: 4px solid #9575cd;
+	width: 80px;
+	margin-top: 0.3rem;
+	margin-bottom: 1.5rem;
+}
+
+.footer-custom a {
+	font-size: 1.4rem;
+	color: #ccc;
+	text-decoration: none;
+	transition: color 0.3s ease;
+}
+
+.footer-custom a:hover {
+	color: #9575cd;
+}
+
+.footer-custom .icon {
+	font-size: 1.5rem;
+	margin-right: 0.6rem;
+}
+
+.footer-custom p {
+	font-size: 1.4rem;
+	color: #ccc;
+	line-height: 1.8;
+}
+
+.footer-bottom {
+	background-color: #1a1a1a;
+	color: #aaa;
+	font-size: 1.3rem;
+	text-align: center;
+	padding: 1rem 0;
+	border-top: 1px solid #333;
+}
+
 @media ( max-width : 768px) {
 	section {
 		flex-direction: column;
@@ -115,73 +183,6 @@ footer {
 	}
 }
 
-.footer-custom {
-  background-color: #111;
-  color: #fff;
-  font-family: 'Segoe UI', sans-serif;
-  padding-top: 3rem;
-  padding-bottom: 2rem;
-}
-
-.footer-custom h4 {
-  font-size: 2rem; 
-  margin-bottom: 1rem;
-  color: #fff;
-}
-
-.footer-custom h4 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-  color: #fff;
-  position: relative;
-}
-
-.footer-custom hr {
-  border-top: 3px solid #9575cd; 
-  width: 300px;
-  margin: 0 0 1.5rem 0; 
-}
-
-.hr-centered {
-  display: inline-block;
-  border: none;
-  border-top: 4px solid #9575cd; 
-  width: 80px;
-  margin-top: 0.3rem;
-  margin-bottom: 1.5rem;
-}
-
-.footer-custom a {
-  font-size: 1.4rem; 
-  color: #ccc;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.footer-custom a:hover {
-  color: #9575cd;
-}
-
-.footer-custom .icon {
-  font-size: 1.5rem; 
-  margin-right: 0.6rem;
-}
-
-.footer-custom p {
-  font-size: 1.4rem; 
-  color: #ccc;
-  line-height: 1.8;
-}
-
-.footer-bottom {
-  background-color: #1a1a1a;
-  color: #aaa;
-  font-size: 1.3rem; 
-  text-align: center;
-  padding: 1rem 0;
-  border-top: 1px solid #333;
-}
-
 @media (max-width: 576px) {
   .footer-custom {
     height: 5rem;
@@ -194,4 +195,75 @@ footer {
   .footer-custom .row > div {
     margin-bottom: 2rem;
   }
+}
+
+@media ( max-width : 480px) {
+	body {
+		font-size: 14px;
+	}
+	header {
+		padding: 60px 10px;
+		margin-bottom: 10px;
+	}
+	header h1 {
+		font-size: 2rem;
+	}
+	header p {
+		font-size: 1.3rem;
+	}
+	section {
+		padding: 20px;
+		gap: 20px;
+		flex-direction: column;
+		margin-bottom: 30px;
+	}
+	section img {
+		width: 100%;
+		height: auto;
+	}
+	.texto h2 {
+		font-size: 1.9rem;
+	}
+	.texto p {
+		font-size: 1.2rem;
+	}
+	.btn {
+		font-size: 1rem !important;
+		padding: 8px 14px !important;
+	}
+	.footer-custom {
+		padding-top: 2rem;
+		padding-bottom: 1rem;
+		background-color: #111 !important;
+		color: #fff !important;
+		height: auto;
+	}
+	.footer-custom h4 {
+		font-size: 1.5rem;
+	}
+	.footer-custom p, .footer-custom a {
+		font-size: 1.2rem;
+	}
+	.footer-custom .icon {
+		font-size: 1.2rem;
+	}
+	.footer-bottom {
+		background-color: #1a1a1a !important;
+		color: #aaa !important;
+		font-size: 1.1rem;
+	}
+	nav {
+		padding: 15px 20px !important;
+	}
+	nav a {
+		font-size: 1.4rem !important;
+	}
+	.d-flex {
+		flex-direction: column;
+		align-items: stretch !important;
+		gap: 10px;
+	}
+	.navbar {
+		font-size: 22px;
+	}
 }

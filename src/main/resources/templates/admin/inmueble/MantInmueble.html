@@ -10,7 +10,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" th:href="@{/css/MantInmueble.css}">
 <link rel="stylesheet" th:href="@{/css/Reportes.css}" />
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
@@ -47,7 +47,7 @@
 				    </select>
 				</div>
 		    </div>
-		    <div class="row">
+		    <div class="form-row row">
 		        <div class="col-md-6 d-flex align-items-center mb-2">
 				    <label class="control-label mr-2" style="width: 120px;">Administrador</label>
 				    <select name="adminId" class="form-control" style="margin-left: 59px;">
@@ -67,49 +67,50 @@
 		</form>
 	</div>
 	
-    <table class="table">
-        <thead>
-            <tr>
-                <th class="text-center align-middle">ID Inmueble</th>
-                <th class="text-center align-middle">Nombre</th>
-                <th class="text-center align-middle">Capacidad</th>
-                <th class="text-center align-middle">Servicios Incluidos</th>
-                <th class="text-center align-middle">Disponibilidad</th>
-                <th class="text-center align-middle">Precio Por Noche</th>
-                <th class="text-center align-middle">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="inmueble : ${inmuebles}">
-                <td th:text="${inmueble.id}">ID Inmueble</td>
-                <td th:text="${inmueble.nombre}">Nombre</td>
-                <td th:text="${inmueble.capacidad}">Capacidad</td>
-                <td th:text="${inmueble.serviciosIncluidos}">Servicios Incluidos</td>
-                <td th:text="${inmueble.disponibilidad}">Disponibilidad</td>
-                <td th:text="${inmueble.precioPorNoche}">Precio Por Noche</td>
-                <td>
-                    <a th:href="@{/admin/inmueble/inmuebles/detalle/{id}(id=${inmueble.id})}" title="Detalles">
-                        <i class="fa fa-magnifying-glass icon-action"></i>
-                    </a>
-                    <a th:href="@{/admin/inmueble/inmuebles/editar/{id}(id=${inmueble.id})}" title="Editar">
-                        <i class="fa fa-pen icon-action"></i>
-                    </a>
-					<a href="javascript:void(0);"
-					   th:onclick="'confirmarEliminacion(\'/admin/inmueble/inmuebles/' + ${inmueble.id} + '\')'"
-					   title="Eliminar">
-					    <i class="fa fa-trash icon-action text-danger"></i>
-					</a>
-                </td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(lista)}">
-	            <td colspan="100%" class="text-center">
-	                <span th:if="${!hayFiltros}" class="text-muted">No hay datos en la tabla de inmuebles</span>
-	                <span th:if="${hayFiltros}" class="text-muted">No hay datos con los filtros seleccionados</span>
-	            </td>
-	        </tr>
-        </tbody>
-    </table>
-    
+	<div class="table-responsive">
+	    <table class="table">
+	        <thead>
+	            <tr>
+	                <th class="text-center align-middle">ID Inmueble</th>
+	                <th class="text-center align-middle">Nombre</th>
+	                <th class="text-center align-middle">Capacidad</th>
+	                <th class="text-center align-middle">Servicios Incluidos</th>
+	                <th class="text-center align-middle">Disponibilidad</th>
+	                <th class="text-center align-middle">Precio Por Noche</th>
+	                <th class="text-center align-middle">Acciones</th>
+	            </tr>
+	        </thead>
+	        <tbody>
+	            <tr th:each="inmueble : ${inmuebles}">
+	                <td th:text="${inmueble.id}">ID Inmueble</td>
+	                <td th:text="${inmueble.nombre}">Nombre</td>
+	                <td th:text="${inmueble.capacidad}">Capacidad</td>
+	                <td th:text="${inmueble.serviciosIncluidos}">Servicios Incluidos</td>
+	                <td th:text="${inmueble.disponibilidad}">Disponibilidad</td>
+	                <td th:text="${inmueble.precioPorNoche}">Precio Por Noche</td>
+	                <td>
+	                    <a th:href="@{/admin/inmueble/inmuebles/detalle/{id}(id=${inmueble.id})}" title="Detalles">
+	                        <i class="fa fa-magnifying-glass icon-action"></i>
+	                    </a>
+	                    <a th:href="@{/admin/inmueble/inmuebles/editar/{id}(id=${inmueble.id})}" title="Editar">
+	                        <i class="fa fa-pen icon-action"></i>
+	                    </a>
+						<a href="javascript:void(0);"
+						   th:onclick="'confirmarEliminacion(\'/admin/inmueble/inmuebles/' + ${inmueble.id} + '\')'"
+						   title="Eliminar">
+						    <i class="fa fa-trash icon-action text-danger"></i>
+						</a>
+	                </td>
+	            </tr>
+	            <tr th:if="${#lists.isEmpty(lista)}">
+		            <td colspan="100%" class="text-center">
+		                <span th:if="${!hayFiltros}" class="text-muted">No hay datos en la tabla de inmuebles</span>
+		                <span th:if="${hayFiltros}" class="text-muted">No hay datos con los filtros seleccionados</span>
+		            </td>
+		        </tr>
+	        </tbody>
+	    </table>
+    </div>
     <script>
 	    document.addEventListener("DOMContentLoaded", function () {
 	        const filtros = document.getElementById("filtrosForm");
@@ -141,7 +142,10 @@
 	            confirmButtonColor: '#d33',
 	            cancelButtonColor: '#3085d6',
 	            confirmButtonText: 'Sí, eliminar',
-	            cancelButtonText: 'Cancelar'
+	            cancelButtonText: 'Cancelar',
+	            customClass: {
+	                popup: 'swal-custom-popup'
+	            }
 	        }).then((result) => {
 	            if (result.isConfirmed) {
 	                window.location.href = url;
@@ -159,7 +163,23 @@
             title: '¡Inmueble eliminado!',
             text: 'El inmueble se ha eliminado correctamente',
             icon: 'success',
-            confirmButtonText: 'Aceptar'
+            confirmButtonText: 'Aceptar',
+            customClass: {
+                popup: 'swal-custom-popup'
+            }
+        });
+    </script>
+</div>
+<div th:if="${errorInmueble}">
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'No se puede eliminar',
+            text: /*[[${errorInmueble}]]*/ 'Este inmueble tiene reservas asociadas',
+            confirmButtonText: 'Aceptar',
+            customClass: {
+                popup: 'swal-custom-popup'
+            }
         });
     </script>
 </div>
@@ -175,14 +195,20 @@
                     title: '¡Actualizado!',
                     text: 'El inmueble se actualizó correctamente',
                     icon: 'success',
-                    confirmButtonText: 'Aceptar'
+                    confirmButtonText: 'Aceptar',
+                    customClass: {
+                        popup: 'swal-custom-popup'
+                    }
                 });
             } else {
                 Swal.fire({
                     title: 'Error',
                     text: 'No se pudo actualizar el inmueble. Intente nuevamente',
                     icon: 'error',
-                    confirmButtonText: 'Aceptar'
+                    confirmButtonText: 'Aceptar',
+                    customClass: {
+                        popup: 'swal-custom-popup'
+                    }
                 });
             }
         }
@@ -200,7 +226,10 @@
                     title: '¡Agregado!',
                     text: 'El inmueble se registró correctamente',
                     icon: 'success',
-                    confirmButtonText: 'Aceptar'
+                    confirmButtonText: 'Aceptar',
+                    customClass: {
+                        popup: 'swal-custom-popup'
+                    }
                 });
             }
         }

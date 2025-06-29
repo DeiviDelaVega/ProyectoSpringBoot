@@ -11,12 +11,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.polo.webreservas.model.Inmueble;
 import com.polo.webreservas.repository.InmuebleRepository;
+import com.polo.webreservas.repository.ReservaRepository;
 
 @Service
 public class InmuebleServiceImpl implements InmuebleService {
 
 	@Autowired
 	private InmuebleRepository repositorio;
+	
+	@Autowired
+	private ReservaRepository reservaRepository;
 	
 	@Override
 	public List<Inmueble> listarTodo() {
@@ -40,6 +44,9 @@ public class InmuebleServiceImpl implements InmuebleService {
 
 	@Override
 	public void eliminar(int id) {
+		if (reservaRepository.existsByInmuebleId(id)) {
+	        throw new IllegalStateException("No se puede eliminar un inmueble con reservas asociadas");
+	    }
 		repositorio.deleteById(id);
 	}
 

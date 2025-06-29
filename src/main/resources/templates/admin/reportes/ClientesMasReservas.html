@@ -7,15 +7,16 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<link rel="stylesheet" th:href="@{/css/Reportes.css}" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 	<nav th:replace="admin/HeaderNavAdministrador :: nav"></nav>
 	<br>
 	
 	<div class="fade-in">
-		<h2 style="text-align:center;">👤 Clientes con Más Reservas</h2>
+		<h2 style="text-align:center;">👤 Clientes Con Más Reservas</h2>
 		<br>
-		<div style="width: 60%; margin: auto;">
+		<div class="chart-container" style="width: 60%; margin: auto;">
 			<canvas id="graficoClientes"></canvas>
 		</div>
 		<br>

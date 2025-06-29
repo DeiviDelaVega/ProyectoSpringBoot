@@ -150,7 +150,6 @@ label {
     font-size: 1.4rem;
 }
 
-
 @media (max-width: 576px) {
     .containerRegistro {
         margin-left: 5%;
@@ -205,5 +204,53 @@ label {
 
     br {
         display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .containerRegistro {
+        margin: 0 30px;
+    }
+
+    .form-horizontal {
+        padding: 20px 15px;
+        border-top-width: 3px;
+    }
+
+    label {
+        font-size: 1.2rem;
+    }
+
+    .form-control {
+        font-size: 1.2rem;
+        padding: 0.5rem 1rem;
+        height: auto;
+    }
+
+    .btn-submit {
+        font-size: 1.4rem;
+        padding: 0.9rem 1.5rem;
+    }
+
+    h2.text-center {
+        font-size: 2rem;
+        text-shadow: 2px 2px 4px rgba(50, 50, 50, 0.4);
+    }
+
+    .alert {
+        font-size: 1.2rem;
+        padding: 0.8rem 1rem;
+    }
+
+    .back-link a, .back-link p {
+        font-size: 1.2rem;
+    }
+
+    .navbar {
+        padding: 10px 15px;
+    }
+
+    .navbar-brand strong {
+        font-size: 18px;
     }
 }
