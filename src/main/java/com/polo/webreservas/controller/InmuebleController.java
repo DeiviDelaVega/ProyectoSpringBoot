@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.polo.webreservas.model.Administrador;
 import com.polo.webreservas.model.Inmueble;
+import com.polo.webreservas.repository.ReservaRepository;
 import com.polo.webreservas.service.AdminService;
 import com.polo.webreservas.service.CloudinaryService;
 import com.polo.webreservas.service.InmuebleService;
@@ -37,6 +38,9 @@ public class InmuebleController {
 
 	@Autowired
 	private CloudinaryService clouService;
+	
+	@Autowired
+	private ReservaRepository reservaRepository;
 
 	@GetMapping("/inmuebles")
 	public String listar(@RequestParam(name = "page", defaultValue = "0") int page, 
@@ -173,19 +177,24 @@ public class InmuebleController {
 	    }
 	    return "redirect:/admin/inmueble/inmuebles";
 	}
-
+	
 	@GetMapping("/inmuebles/{id}")
 	public String eliminar(@PathVariable int id, RedirectAttributes redirectAttributes) {
 	    Inmueble inmueble = inmuService.obtenerPorId(id);
+	    
 	    if (inmueble != null) {
+	        if (reservaRepository.existsByInmuebleId(id)) {
+	            redirectAttributes.addFlashAttribute("errorInmueble", "No se puede eliminar el inmueble porque tiene reservas asociadas");
+	            return "redirect:/admin/inmueble/inmuebles";
+	        }
 	        if (inmueble.getImagenHabitacion() != null && !inmueble.getImagenHabitacion().isEmpty()) {
 	            clouService.eliminarImagenPorUrl(inmueble.getImagenHabitacion());
 	        }
-	        
 	        inmuService.eliminar(id);
-	        
 	        redirectAttributes.addFlashAttribute("eliminado", true);
 	    }
+
 	    return "redirect:/admin/inmueble/inmuebles";
 	}
+
 }
