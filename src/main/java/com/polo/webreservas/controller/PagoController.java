@@ -16,7 +16,6 @@ import com.polo.webreservas.model.Pago;
 import com.polo.webreservas.model.Reserva;
 import com.polo.webreservas.repository.ClienteRepository;
 import com.polo.webreservas.repository.InmuebleRepository;
-import com.polo.webreservas.repository.ReservaRepository;
 import com.polo.webreservas.service.PagoService;
 import com.polo.webreservas.service.ReservaService;
 import com.stripe.Stripe;
@@ -41,15 +40,11 @@ public class PagoController {
     private InmuebleRepository inmuebleRepository;
 
     @Autowired
-    private ReservaRepository reservaRepository;
-    
-    @Autowired
     private ReservaService reservaService;
-    
+
     @Autowired
     private PagoService pagoService;
 
-    
     @PostConstruct
     public void init() {
         Stripe.apiKey = stripeSecretKey;
@@ -64,7 +59,7 @@ public class PagoController {
 
         long amount = (long) (Double.parseDouble(total) * 100); // en centavos
 
-        // Guardar datos en sesión
+        // Guardar en sesión
         session.setAttribute("fechaInicio", fechaInicio);
         session.setAttribute("fechaFin", fechaFin);
         session.setAttribute("total", total);
@@ -72,8 +67,8 @@ public class PagoController {
 
         SessionCreateParams params = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("http://localhost:9090/pago/reserva-exitosa?session_id={CHECKOUT_SESSION_ID}")
-                .setCancelUrl("http://localhost:9090/pago/error")
+                .setSuccessUrl("https://proyectospringboot-production.up.railway.app/pago/reserva-exitosa?session_id={CHECKOUT_SESSION_ID}")
+                .setCancelUrl("https://proyectospringboot-production.up.railway.app/pago/error")
                 .addLineItem(SessionCreateParams.LineItem.builder()
                         .setQuantity(1L)
                         .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
@@ -87,66 +82,91 @@ public class PagoController {
                 .build();
 
         Session stripeSession = Session.create(params);
-        
-        session.setAttribute("fechaInicio", fechaInicio);
-        session.setAttribute("fechaFin", fechaFin);
-        session.setAttribute("total", total);
-        session.setAttribute("inmuebleId", inmuebleId);
         session.setAttribute("stripePaymentId", stripeSession.getPaymentIntent());
 
         return "redirect:" + stripeSession.getUrl();
     }
 
     @GetMapping("/reserva-exitosa")
-    public String reservaExitosa(@RequestParam("session_id") String sessionId,HttpSession session, Model model, Authentication auth) throws StripeException{
-        String correo = auth.getName();
-        Cliente cliente = clienteRepository.findByCorreo(correo);
+    public String reservaExitosa(@RequestParam("session_id") String sessionId,
+                                  HttpSession session, Model model, Authentication auth) {
+        try {
+            if (auth == null || auth.getName() == null) {
+                model.addAttribute("mensaje", "Debes iniciar sesión para completar la reserva.");
+                return "cliente/pago-error";
+            }
 
-        String fechaInicioStr = (String) session.getAttribute("fechaInicio");
-        String fechaFinStr = (String) session.getAttribute("fechaFin");
-        String totalStr = (String) session.getAttribute("total");
-        Integer inmuebleId = (Integer) session.getAttribute("inmuebleId");
+            String correo = auth.getName();
+            Cliente cliente = clienteRepository.findByCorreo(correo);
+            if (cliente == null) {
+                model.addAttribute("mensaje", "Cliente no encontrado.");
+                return "cliente/pago-error";
+            }
 
-        if (fechaInicioStr == null || fechaFinStr == null || totalStr == null || inmuebleId == null || cliente == null) {
-            model.addAttribute("error", "Error al recuperar los datos de la reserva.");
-            return "error";
+            String fechaInicioStr = (String) session.getAttribute("fechaInicio");
+            String fechaFinStr = (String) session.getAttribute("fechaFin");
+            String totalStr = (String) session.getAttribute("total");
+            Integer inmuebleId = (Integer) session.getAttribute("inmuebleId");
+
+            if (fechaInicioStr == null || fechaFinStr == null || totalStr == null || inmuebleId == null) {
+                model.addAttribute("mensaje", "Tu sesión ha expirado. Intenta nuevamente.");
+                return "cliente/pago-error";
+            }
+
+            Session stripeSession = Session.retrieve(sessionId);
+
+            // ✅ Verificar si el pago fue exitoso
+            if (!"paid".equals(stripeSession.getPaymentStatus())) {
+                model.addAttribute("mensaje", "El pago no fue confirmado por Stripe.");
+                return "cliente/pago-error";
+            }
+
+            String paymentIntentId = stripeSession.getPaymentIntent();
+            Inmueble inmueble = inmuebleRepository.findById(inmuebleId).orElse(null);
+            if (inmueble == null) {
+                model.addAttribute("mensaje", "Inmueble no encontrado.");
+                return "cliente/pago-error";
+            }
+
+            // Crear reserva
+            Reserva reserva = new Reserva();
+            reserva.setFechaInicio(LocalDate.parse(fechaInicioStr));
+            reserva.setFechaFin(LocalDate.parse(fechaFinStr));
+            reserva.setMontoTotal(new BigDecimal(totalStr));
+            reserva.setMetodoPago("Tarjeta");
+            reserva.setEstadoReserva("Solicitado");
+            reserva.setCliente(cliente);
+            reserva.setInmueble(inmueble);
+            reservaService.guardar(reserva);
+
+            // Registrar pago
+            Pago pago = new Pago();
+            pago.setReserva(reserva);
+            pago.setFechaPago(java.time.LocalDateTime.now());
+            pago.setMonto(new BigDecimal(totalStr));
+            pago.setStripePaymentId(paymentIntentId);
+            pagoService.guardar(pago);
+
+   
+            session.removeAttribute("fechaInicio");
+            session.removeAttribute("fechaFin");
+            session.removeAttribute("total");
+            session.removeAttribute("inmuebleId");
+            session.removeAttribute("stripePaymentId");
+
+
+            model.addAttribute("mensaje", "¡Reserva exitosa!");
+            return "cliente/reserva-exitosa";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("mensaje", "Error inesperado al procesar la reserva.");
+            return "cliente/pago-error";
         }
-        
-        Session stripeSession = Session.retrieve(sessionId);
-        String paymentIntentId = stripeSession.getPaymentIntent();
-
-        Inmueble inmueble = inmuebleRepository.findById(inmuebleId).orElseThrow();
-
-        Reserva reserva = new Reserva();
-        reserva.setFechaInicio(LocalDate.parse(fechaInicioStr));
-        reserva.setFechaFin(LocalDate.parse(fechaFinStr));
-        reserva.setMontoTotal(new BigDecimal(totalStr));
-        reserva.setMetodoPago("Tarjeta");
-        reserva.setEstadoReserva("Solicitado");
-        reserva.setCliente(cliente);
-        reserva.setInmueble(inmueble);
-
-        reservaService.guardar(reserva);
-        
-        Pago pago = new Pago();
-        pago.setReserva(reserva);
-        pago.setFechaPago(java.time.LocalDateTime.now());
-        pago.setMonto(new BigDecimal(totalStr));
-        pago.setStripePaymentId(paymentIntentId);
-        pagoService.guardar(pago);
-
-        session.removeAttribute("fechaInicio");
-        session.removeAttribute("fechaFin");
-        session.removeAttribute("total");
-        session.removeAttribute("inmuebleId");
-        session.removeAttribute("stripePaymentId");
-
-        model.addAttribute("mensaje", "¡Reserva exitosa!");
-        return "cliente/reserva-exitosa";
     }
 
     @GetMapping("/error")
-    public String errorPago(Model model) { 
+    public String errorPago(Model model) {
         model.addAttribute("mensaje", "El pago fue cancelado o falló.");
         return "cliente/pago-error";
     }

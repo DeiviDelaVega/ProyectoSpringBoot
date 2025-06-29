@@ -14,16 +14,16 @@
 </head>
 
 <body>
-    <nav th:replace="admin/HeaderNavAdministrador :: nav"></nav>
-    <br>
-
+	<nav th:replace="admin/HeaderNavAdministrador :: nav"></nav>
+	<br>
+	<br>
     <div>
         <h2 class="text-center section-title">
             ACTUALIZAR DATOS DEL CLIENTE CON ID <span th:text="${cliente.idCliente}"></span>
         </h2>
 		<div class="container mt-4" style="padding: 0 15px;">
 	        <div class="form-horizontal">
-	            <h4 class="text-center">Editar Cliente</h4>
+	            <h4 class="text-center">Modificar informacion registrada</h4>
 	            <hr />
 	            <br />
 	
@@ -62,14 +62,16 @@
 	                        <input type="email" th:field="*{correo}" class="form-control" required />
 	                    </div>
 	                </div>
-	                <div class="form-group col-md-6">
-	    <label for="estado" class="control-label">Estado</label>
-	    <select th:field="*{estado}" class="form-control" required>
-	        <option value="activo">Activo</option>
-	        <option value="sancionado">Sancionado</option>
-	    </select>
-	</div>
-	                
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="estado" class="control-label">Estado</label>
+							<select th:field="*{estado}" class="form-control" id="estado" required>
+								<option value="activo">Activo</option>
+								<option value="sancionado">Sancionado</option>
+							</select>
+						</div>
+						<div class="form-group col-md-6"></div> <!-- para mantener la simetría -->
+					</div>
 	
 	                <div class="button-group-container">
 	                    <button type="submit" class="btn-dark">Actualizar</button>

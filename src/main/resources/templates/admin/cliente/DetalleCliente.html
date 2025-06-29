@@ -4,15 +4,13 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Detalle Cliente</title>
-	<!-- Bootstrap 4 -->
+
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
 		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-	<!-- Tus estilos -->
 	<link rel="stylesheet" th:href="@{/css/Reportes.css}" />
 	<link rel="stylesheet" th:href="@{/css/Cliente.css}">
 	
-	<!--  -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
@@ -20,15 +18,12 @@
 	<!-- Barra de navegación -->
 	<nav th:replace="admin/HeaderNavAdministrador :: nav"></nav>
 	<br>
+	<br>
 
-	<!-- Contenedor principal con estilos personalizados -->
-	<div>
-
-		<!-- Título principal centrado -->
-		<h2 class="text-center section-title">
-			DETALLES DEL CLIENTE CON ID <span th:text="${cliente.idCliente}"></span>
-		</h2>
-
+	<!-- Título principal centrado -->
+	<h2 class="text-center section-title">
+		DETALLES DEL CLIENTE CON ID <span th:text="${cliente.idCliente}"></span>
+	</h2>
 		<!-- Subcontenedor estilizado -->
 		<div class="container mt-4" style="padding: 0 15px;">
 			<div class="form-horizontal">
@@ -71,6 +66,7 @@
 						<p class="form-control" th:text="${cliente.correo}"></p>
 					</div>
 				</div>
+
 				<div class="form-group col-md-6">
 				    <label class="control-label">Estado</label>
 				    <p class="form-control" th:text="${cliente.estado}"></p>
@@ -80,10 +76,7 @@
 				<div class="button-group-container mt-4">
 					<a class="btn btn-secondary" th:href="@{/admin/cliente}">Volver</a>
 				</div>
-			</div>
-		</div>
 	</div>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

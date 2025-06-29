@@ -1,7 +1,9 @@
 // ReservaController.java
 package com.polo.webreservas.controller;
 
+import com.polo.webreservas.model.Pago;
 import com.polo.webreservas.model.Reserva;
+import com.polo.webreservas.service.PagoService;
 import com.polo.webreservas.service.ReservaService;
 import com.polo.webreservas.util.PageRender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,10 @@ public class ReservaController {
 
     @Autowired
     private ReservaService reservaService;
-
+    
+    @Autowired
+    private PagoService pagoService;
+    
     @GetMapping("/reservas")
     public String listarReservas(@RequestParam(defaultValue = "0") int page, Model model) {
         Pageable pageRequest = PageRequest.of(page, 5);
@@ -88,6 +93,14 @@ public class ReservaController {
     // GET para eliminar una reserva
     @GetMapping("/reservas/eliminar/{id}")
     public String eliminarReserva(@PathVariable Long id) {
+        Reserva reserva = reservaService.obtenerPorId(id)
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+
+        Pago pago = pagoService.buscarPorReserva(reserva);
+        if (pago != null) {
+            pagoService.eliminar(pago);
+        }
+
         reservaService.eliminar(id);
         return "redirect:/admin/reserva/reservas";
     }
